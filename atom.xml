@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://ojima-h.github.com/atom.xml" rel="self"/>
   <link href="http://ojima-h.github.com/"/>
-  <updated>2012-04-14T23:39:16+09:00</updated>
+  <updated>2012-04-15T00:14:27+09:00</updated>
   <id>http://ojima-h.github.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -14,10 +14,108 @@
 
   
   <entry>
-    <title type="html"><![CDATA[はじめましてのご挨拶]]></title>
+    <title type="html"><![CDATA[第0回 Railsソースコードリーディング]]></title>
     <link href="http://ojima-h.github.com/blog/2012/04/14/rails-sourcecode-reading-0/"/>
     <updated>2012-04-14T23:31:00+09:00</updated>
     <id>http://ojima-h.github.com/blog/2012/04/14/rails-sourcecode-reading-0</id>
+    <content type="html"><![CDATA[<p>なんとなくで始めみてみたRailsソースコードリーディング。
+手探りながらの第0回でした。</p>
+
+<p>今日のようすをひとことでいうと <strong>ぐだぐだ</strong></p>
+
+<p>今日のお題は</p>
+
+<p><strong>Railsの概要と基本的な使い方</strong></p>
+
+<p>まずは、MVCに関するお話。<br/>
+MVCとは、アプリケーションの構成を</p>
+
+<ul>
+<li>M (=Model)
+データを管理するコンポーネント</li>
+<li>V(=View)
+ユーザの目の前に表示される部分を管理するコンポーネント</li>
+<li>C(=controller)
+ModelとViewのあいだをとりもつコンポーネント</li>
+</ul>
+
+
+<p>の3つに分けて捉えましょう、という考えかた。</p>
+
+<p>一方で、Railsの構成がどうなっているかというと、、、</p>
+
+<p>実はRails本体はからっぽで、実体は次のようなライブラリ群からできているのです。</p>
+
+<ul>
+<li><p>ActionPack</p>
+
+<ul>
+<li>ActionController</li>
+<li>ActionView</li>
+<li>ActionDispatch</li>
+</ul>
+</li>
+<li><p>ActiveRecord</p></li>
+<li><p>ActiveModel</p></li>
+<li><p>ActiveResource</p></li>
+<li><p>etc&#8230;</p></li>
+<li><p>railties</p></li>
+</ul>
+
+
+<p>そして、M,V,C のそれぞれと、 Railsの各構成要素のそれぞれが一対一に対応しているのです。</p>
+
+<ul>
+<li>Model &lt;=> ActiveRecord, ActiveModel, ActiveResource</li>
+<li>View &lt;=> ActionView</li>
+<li>Controller &lt;=> ActionController, ActionDispatch</li>
+</ul>
+
+
+<p>そしてそして、railtiesがこれらのライブラリ群をまとめあげて、コマンドラインインターフェイスを提供していると。。。</p>
+
+<p>というわけで、次回以降はライブラリ群を1つ1つ読み解いていこう!! というお話でした。</p>
+
+<p>とりあえず、次回はActiveRecordで。</p>
+
+<hr />
+
+<p>さてさて、Railsの簡単な使いかたを勉強しましょう、ということになりました。</p>
+
+<pre><code>rails new sample
+</code></pre>
+
+<p>からはじめて、</p>
+
+<pre><code>rails generate scaffold pages title:string content:text
+</code></pre>
+
+<p>ここまでは何の問題もなかったんです。</p>
+
+<p>ところが</p>
+
+<pre><code>rake db:migrate
+</code></pre>
+
+<p>したところ、、、</p>
+
+<p><strong>全員エラー!!!</strong></p>
+
+<p>しかも、エラーメッセージが意味不明だし。</p>
+
+<p>そんなこんなしているうちに時間がきてしまい、結局グダグダになってしまいましたとさ。</p>
+
+<p>はぁ、書くの飽きた。。。</p>
+
+<p>まぁ、そんなかんじの題0回でした。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[はじめましてのご挨拶]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/04/14/hello-world/"/>
+    <updated>2012-04-14T23:31:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/04/14/hello-world</id>
     <content type="html"><![CDATA[<h2>ブログはじめました</h2>
 
 <p>Railsソースコードリーディングを機に、いまさらながらブログなど始めてみ

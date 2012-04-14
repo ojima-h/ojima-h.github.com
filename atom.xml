@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
+  <title><![CDATA[はげちらかしたメモ]]></title>
   <link href="http://ojima-h.github.com/atom.xml" rel="self"/>
   <link href="http://ojima-h.github.com/"/>
-  <updated>2012-04-15T00:14:27+09:00</updated>
+  <updated>2012-04-15T00:31:17+09:00</updated>
   <id>http://ojima-h.github.com/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[ojima-h]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -76,7 +76,7 @@ ModelとViewのあいだをとりもつコンポーネント</li>
 
 <p>というわけで、次回以降はライブラリ群を1つ1つ読み解いていこう!! というお話でした。</p>
 
-<p>とりあえず、次回はActiveRecordで。</p>
+<p>とりあえず、次回はActiveRecordで。来週です。</p>
 
 <hr />
 
@@ -107,7 +107,7 @@ ModelとViewのあいだをとりもつコンポーネント</li>
 
 <p>はぁ、書くの飽きた。。。</p>
 
-<p>まぁ、そんなかんじの題0回でした。</p>
+<p>まぁ、そんなかんじの第0回でした。</p>
 ]]></content>
   </entry>
   

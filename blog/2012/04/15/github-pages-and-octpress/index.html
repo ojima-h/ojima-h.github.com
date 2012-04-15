@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>はげちらかしたメモ</title>
+  <title>Github pages + Octpress - はげちらかしたメモ</title>
   <meta name="author" content="ojima-h">
 
   
@@ -20,7 +20,7 @@ http:// &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ojima-h.github.com">
+  <link rel="canonical" href="http://ojima-h.github.com/blog/2012/04/15/github-pages-and-octpress">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -64,15 +64,12 @@ http:// &hellip;">
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/04/15/github-pages-and-octpress/">Github Pages + Octpress</a></h1>
+      <h1 class="entry-title">Github Pages + Octpress</h1>
     
     
       <p class="meta">
@@ -95,7 +92,7 @@ http:// &hellip;">
   </header>
 
 
-  <div class="entry-content"><p>GitHub Pages + Octpressでブログ立ち上げるまでの記録。</p>
+<div class="entry-content"><p>GitHub Pages + Octpressでブログ立ち上げるまでの記録。</p>
 
 <ul>
 <li><a href="http://mattn.kaoriya.net/software/lang/ruby/20111017205717.htm">http://mattn.kaoriya.net/software/lang/ruby/20111017205717.htm</a></li>
@@ -202,147 +199,16 @@ git push origin source
 
 <p>それにしても便利。</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/04/14/rails-sourcecode-reading-0/">第0回 Railsソースコードリーディング</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">ojima-h</span></span>
 
-<time datetime="2012-04-14T23:31:00+09:00" pubdate data-updated="true">Apr 14<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>なんとなくで始めみてみたRailsソースコードリーディング。
-手探りながらの第0回でした。</p>
-
-<p>今日のようすをひとことでいうと <strong>ぐだぐだ</strong></p>
-
-<p>今日のお題は</p>
-
-<p><strong>Railsの概要と基本的な使い方</strong></p>
-
-<p>まずは、MVCに関するお話。<br/>
-MVCとは、アプリケーションの構成を</p>
-
-<ul>
-<li>M (=Model)
-データを管理するコンポーネント</li>
-<li>V(=View)
-ユーザの目の前に表示される部分を管理するコンポーネント</li>
-<li>C(=controller)
-ModelとViewのあいだをとりもつコンポーネント</li>
-</ul>
-
-
-<p>の3つに分けて捉えましょう、という考えかた。</p>
-
-<p>一方で、Railsの構成がどうなっているかというと、、、</p>
-
-<p>実はRails本体はからっぽで、実体は次のようなライブラリ群からできているのです。</p>
-
-<ul>
-<li><p>ActionPack</p>
-
-<ul>
-<li>ActionController</li>
-<li>ActionView</li>
-<li>ActionDispatch</li>
-</ul>
-</li>
-<li><p>ActiveRecord</p></li>
-<li><p>ActiveModel</p></li>
-<li><p>ActiveResource</p></li>
-<li><p>etc&#8230;</p></li>
-<li><p>railties</p></li>
-</ul>
-
-
-<p>そして、M,V,C のそれぞれと、 Railsの各構成要素のそれぞれが一対一に対応しているのです。</p>
-
-<ul>
-<li>Model &lt;=> ActiveRecord, ActiveModel, ActiveResource</li>
-<li>View &lt;=> ActionView</li>
-<li>Controller &lt;=> ActionController, ActionDispatch</li>
-</ul>
-
-
-<p>そしてそして、railtiesがこれらのライブラリ群をまとめあげて、コマンドラインインターフェイスを提供していると。。。</p>
-
-<p>というわけで、次回以降はライブラリ群を1つ1つ読み解いていこう!! というお話でした。</p>
-
-<p>とりあえず、次回はActiveRecordで。来週です。</p>
-
-<hr />
-
-<p>さてさて、Railsの簡単な使いかたを勉強しましょう、ということになりました。</p>
-
-<pre><code>rails new sample
-</code></pre>
-
-<p>からはじめて、</p>
-
-<pre><code>rails generate scaffold pages title:string content:text
-</code></pre>
-
-<p>ここまでは何の問題もなかったんです。</p>
-
-<p>ところが</p>
-
-<pre><code>rake db:migrate
-</code></pre>
-
-<p>したところ、、、</p>
-
-<p><strong>全員エラー!!!</strong></p>
-
-<p>しかも、エラーメッセージが意味不明だし。</p>
-
-<p>そんなこんなしているうちに時間がきてしまい、結局グダグダになってしまいましたとさ。</p>
-
-<p>はぁ、書くの飽きた。。。</p>
-
-<p>まぁ、そんなかんじの第0回でした。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/04/14/hello-world/">はじめましてのご挨拶</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -354,34 +220,34 @@ ModelとViewのあいだをとりもつコンポーネント</li>
   
 
 
-<time datetime="2012-04-14T23:31:00+09:00" pubdate data-updated="true">Apr 14<span>th</span>, 2012</time>
-        
-      </p>
+<time datetime="2012-04-15T13:44:00+09:00" pubdate data-updated="true">Apr 15<span>th</span>, 2012</time>
+      
+
+
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><h2>ブログはじめました</h2>
-
-<p>Railsソースコードリーディングを機に、いまさらながらブログなど始めてみ
-ました。</p>
-
-<p>github page + octpress + jekyll 環境でやってます。</p>
-
-<p>テストがてら、初めての投稿。。。</p>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ojima-h.github.com/blog/2012/04/15/github-pages-and-octpress/" data-via="" data-counturl="http://ojima-h.github.com/blog/2012/04/15/github-pages-and-octpress/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/04/14/rails-sourcecode-reading-0/" title="Previous Post: 第0回 Railsソースコードリーディング">&laquo; 第0回 Railsソースコードリーディング</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
 </div>
+
 <aside class="sidebar">
   
     <section>
@@ -410,6 +276,7 @@ ModelとViewのあいだをとりもつコンポーネント</li>
 
   
 </aside>
+
 
     </div>
   </div>

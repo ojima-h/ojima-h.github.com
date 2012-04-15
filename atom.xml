@@ -4,7 +4,7 @@
   <title><![CDATA[はげちらかしたメモ]]></title>
   <link href="http://ojima-h.github.com/atom.xml" rel="self"/>
   <link href="http://ojima-h.github.com/"/>
-  <updated>2012-04-15T00:31:17+09:00</updated>
+  <updated>2012-04-15T14:30:27+09:00</updated>
   <id>http://ojima-h.github.com/</id>
   <author>
     <name><![CDATA[ojima-h]]></name>
@@ -12,6 +12,120 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Github pages + Octpress]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/04/15/github-pages-and-octpress/"/>
+    <updated>2012-04-15T13:44:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/04/15/github-pages-and-octpress</id>
+    <content type="html"><![CDATA[<p>GitHub Pages + Octpressでブログ立ち上げるまでの記録。</p>
+
+<ul>
+<li><a href="http://mattn.kaoriya.net/software/lang/ruby/20111017205717.htm">http://mattn.kaoriya.net/software/lang/ruby/20111017205717.htm</a></li>
+<li><a href="http://octopress.org/docs/setup/">http://octopress.org/docs/setup/</a></li>
+<li><a href="http://octopress.org/docs/deploying/github/">http://octopress.org/docs/deploying/github/</a></li>
+<li><a href="http://octopress.org/docs/blogging/">http://octopress.org/docs/blogging/</a></li>
+</ul>
+
+
+<p>を参考に。</p>
+
+<p>環境は、Gentoo-3.2.1-r2 / ruby 1.9.3p0</p>
+
+<ol>
+<li><p><em>username</em>.github.com というレポジトリを新規作成</p></li>
+<li><p>Octpressのソースを取得。</p>
+
+<pre><code>git clone https://github.com/imathis/octopress
+cd octopress
+</code></pre></li>
+<li><p>インストール</p>
+
+<pre><code>rake install
+rake setup_github_pages
+</code></pre>
+
+<p><code>rake setup_github_pages</code> するとGitレポジトリのURIを聞かれるので、
+さっき作ったレポジトリ (= <code>git@github.com/username/username.github.com</code>) を指定する。
+ここで、<code>.git/config</code>を書き換えて、orgin とかを設定してくれるぽい。</p></li>
+<li><p>とりあえず、なにか投稿してみる。</p>
+
+<pre><code>rake new_post["hello world"]
+</code></pre>
+
+<p>&#8220;hello world&#8221;の部分はポストのタイトルを指定します。
+ここで指定したものがURLになります。<br/>
+(実際は、<code>.../:year/:month/:day/:title</code>ってかんじ)</p>
+
+<p>ページに表示されるタイトルはあとからいじれます。</p>
+
+<p>実行すると、<code>source/_posts/&lt;yaer&gt;-&lt;month&gt;-&lt;day&gt;-hello-world.markdown</code>というファイルが
+生成されます。</p>
+
+<pre><code>---
+layout: post
+title: こんにちは
+date: 2012-04-14 23:31
+comments: true
+categories: diary
+---
+
+こんにちは! 世界!
+------------------
+
+むにゃむにゃ
+</code></pre>
+
+<p>こんなかんじて適当に編集します。</p></li>
+<li><p>さあ、公開してみましょう</p>
+
+<p>今作成したファイルをデプロイ用のディレクトリにコピーします。</p>
+
+<pre><code>rake generate
+</code></pre>
+
+<p>この段階では、まだアップロードされてません。</p>
+
+<p>アップするまえにローカル環境で確認することができます。</p>
+
+<pre><code>rake preview
+</code></pre>
+
+<p>として、<code>localhost:4000</code>にアクセスすればおけ。</p>
+
+<p>問題がないようなら、githubにあげます。</p>
+
+<pre><code>rake deploy
+</code></pre></li>
+<li><p>成功していれば (失敗しても)、githubからメールが来ます。</p></li>
+</ol>
+
+
+<p>ちなみに <code>rake deploy</code>でpushされるのは、public/ 以下の内容のみ。
+ソース全体もpushしておきましょう。(って書いてあった)</p>
+
+<pre><code>git add .
+git commit -m "message"
+git push origin source
+</code></pre>
+
+<hr />
+
+<p>なにが便利かっていうと</p>
+
+<ul>
+<li>手元で編集できる。Emacsとかでね。</li>
+<li>localhost でプレビューできる。</li>
+<li>rake 一発で公開できる。</li>
+</ul>
+
+
+<p>そういえば、Octpressみたいな形で配布されるアプリ(？)って初めて見た。<br/>
+たしかに、Rakefile に色々書いておけばシステムにインストールする必要ないしな。。。</p>
+
+<p>それにしても便利。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[第0回 Railsソースコードリーディング]]></title>

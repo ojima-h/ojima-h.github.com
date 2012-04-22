@@ -5,13 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>第0回 Railsソースコードリーディング - はげちらかしたメモ</title>
+  <title>showoff 使ってみた - はげちらかしたメモ</title>
   <meta name="author" content="ojima-h">
 
   
-  <meta name="description" content="なんとなくで始めみてみたRailsソースコードリーディング。
-手探りながらの第0回でした。 今日のようすをひとことでいうと ぐだぐだ 今日のお題は Railsの概要と基本的な使い方 まずは、MVCに関するお話。
-MVCとは、アプリケーションの構成を M (=Model) &hellip;">
+  <meta name="description" content="https://github.com/schacon/showoff Ruby + Markdown で HTML なスライドをつくれる、ということで、使ってみた。 感想は Markdown やっぱり素敵
+Markdown から直にプレビューできる
+コマンド一発で github page &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +20,7 @@ MVCとは、アプリケーションの構成を M (=Model) &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ojima-h.github.com/blog/2012/04/14/rails-sourcecode-reading-0">
+  <link rel="canonical" href="http://ojima-h.github.com/blog/2012/04/22/showoff-intro">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -69,7 +69,7 @@ MVCとは、アプリケーションの構成を M (=Model) &hellip;">
   
   <header>
     
-      <h1 class="entry-title">第0回 Railsソースコードリーディング</h1>
+      <h1 class="entry-title">Showoff 使ってみた</h1>
     
     
       <p class="meta">
@@ -85,103 +85,95 @@ MVCとは、アプリケーションの構成を M (=Model) &hellip;">
   
 
 
-<time datetime="2012-04-14T23:31:00+09:00" pubdate data-updated="true">Apr 14<span>th</span>, 2012</time>
+<time datetime="2012-04-22T14:00:00+09:00" pubdate data-updated="true">Apr 22<span>nd</span>, 2012</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>なんとなくで始めみてみたRailsソースコードリーディング。
-手探りながらの第0回でした。</p>
+<div class="entry-content"><p><a href="https://github.com/schacon/showoff">https://github.com/schacon/showoff</a></p>
 
-<p>今日のようすをひとことでいうと <strong>ぐだぐだ</strong></p>
+<p>Ruby + Markdown で HTML なスライドをつくれる、ということで、使ってみた。</p>
 
-<p>今日のお題は</p>
-
-<p><strong>Railsの概要と基本的な使い方</strong></p>
-
-<p>まずは、MVCに関するお話。<br/>
-MVCとは、アプリケーションの構成を</p>
+<p>感想は</p>
 
 <ul>
-<li>M (=Model)
-データを管理するコンポーネント</li>
-<li>V(=View)
-ユーザの目の前に表示される部分を管理するコンポーネント</li>
-<li>C(=controller)
-ModelとViewのあいだをとりもつコンポーネント</li>
+<li>Markdown やっぱり素敵</li>
+<li>Markdown から直にプレビューできる</li>
+<li>コマンド一発で github page に公開できるのが便利</li>
+<li>ある程度きれいにみせようと思ったら、CSS と javascript がんばって書
+かないといけない</li>
+<li>一枚のスライドのなかで内容を少しづつ見せる、ってことができなかった</li>
 </ul>
 
 
-<p>の3つに分けて捉えましょう、という考えかた。</p>
-
-<p>一方で、Railsの構成がどうなっているかというと、、、</p>
-
-<p>実はRails本体はからっぽで、実体は次のようなライブラリ群からできているのです。</p>
-
-<ul>
-<li><p>ActionPack</p>
-
-<ul>
-<li>ActionController</li>
-<li>ActionView</li>
-<li>ActionDispatch</li>
-</ul>
-</li>
-<li><p>ActiveRecord</p></li>
-<li><p>ActiveModel</p></li>
-<li><p>ActiveResource</p></li>
-<li><p>etc&#8230;</p></li>
-<li><p>railties</p></li>
-</ul>
-
-
-<p>そして、M,V,C のそれぞれと、 Railsの各構成要素のそれぞれが一対一に対応しているのです。</p>
-
-<ul>
-<li>Model &lt;=> ActiveRecord, ActiveModel, ActiveResource</li>
-<li>View &lt;=> ActionView</li>
-<li>Controller &lt;=> ActionController, ActionDispatch</li>
-</ul>
-
-
-<p>そしてそして、railtiesがこれらのライブラリ群をまとめあげて、コマンドラインインターフェイスを提供していると。。。</p>
-
-<p>というわけで、次回以降はライブラリ群を1つ1つ読み解いていこう!! というお話でした。</p>
-
-<p>とりあえず、次回はActiveRecordで。来週です。</p>
+<p>てかんじでした。</p>
 
 <hr />
 
-<p>さてさて、Railsの簡単な使いかたを勉強しましょう、ということになりました。</p>
+<p>使うまでの記録を書いておく。</p>
 
-<pre><code>rails new sample
+<h2>とりあえず使う</h2>
+
+<p>まずはインストール。</p>
+
+<pre><code>gem install showoff
 </code></pre>
 
-<p>からはじめて、</p>
+<p>新規プレゼンテーションの作成</p>
 
-<pre><code>rails generate scaffold pages title:string content:text
+<pre><code>showoff create new_presentation
+cd new_presentation
 </code></pre>
 
-<p>ここまでは何の問題もなかったんです。</p>
+<p>すると、&#8221;one&#8221; というディレクトリの下に &#8220;01_slide.md&#8221; というファイルが
+できているはず。</p>
 
-<p>ところが</p>
+<p>この &#8220;01_slide.md&#8221; にマークダウンで色々書いていけばよい。</p>
 
-<pre><code>rake db:migrate
+<p><code>!SLIDE</code> という行があると、そこでスライドが切り替わる。</p>
+
+<p>コマンドラインから</p>
+
+<pre><code>$ showoff serve
 </code></pre>
 
-<p>したところ、、、</p>
+<p>を実行し、<code>localhost:9090</code> にアクセスすると、プレビューを見ることがで
+きる。</p>
 
-<p><strong>全員エラー!!!</strong></p>
+<p>ちなみに、Firefox + Vimperator を使っているとスライドの操作ができない
+ので注意。<code>Shift + escape</code> で Vimperator のキーを無効にすれば大丈夫。</p>
 
-<p>しかも、エラーメッセージが意味不明だし。</p>
+<p>さらに、</p>
 
-<p>そんなこんなしているうちに時間がきてしまい、結局グダグダになってしまいましたとさ。</p>
+<pre><code>$ showoff static
+</code></pre>
 
-<p>はぁ、書くの飽きた。。。</p>
+<p>で、&#8221;static&#8221; というディレクトリができて、その中に整形された HTML が吐かれる。</p>
 
-<p>まぁ、そんなかんじの第0回でした。</p>
+<p>詳しい使いかたは <a href="https://github.com/schacon/showoff">https://github.com/schacon/showoff</a> を参照。</p>
+
+<h2>github pages への公開方法</h2>
+
+<p>まずは、ソース全体を公開するためのレポジトリを作成。
+全部のファイルをコミットする。</p>
+
+<p>そしたら、おもむろに</p>
+
+<pre><code>$ showoff github
+</code></pre>
+
+<p>これで、&#8221;gh_pages&#8221; というブランチに、<code>showoff static</code> されたコードをコ
+ミットしてくれる。</p>
+
+<p>あとは、<code>git push orgin gh-pages</code> するだけで、
+&#8220;username.github.com/repository-name/&#8221; にスライドが公開される。</p>
+
+<hr />
+
+<p>うーん、やっぱりちょっとづつ表示していくのが欲しいな&#8230;.
+javascript でできるのかな&#8230;</p>
 </div>
 
 
@@ -204,12 +196,12 @@ ModelとViewのあいだをとりもつコンポーネント</li>
   
 
 
-<time datetime="2012-04-14T23:31:00+09:00" pubdate data-updated="true">Apr 14<span>th</span>, 2012</time>
+<time datetime="2012-04-22T14:00:00+09:00" pubdate data-updated="true">Apr 22<span>nd</span>, 2012</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/diary/'>diary</a>
+    <a class='category' href='/blog/categories/ruby/'>ruby</a>, <a class='category' href='/blog/categories/showoff/'>showoff</a>, <a class='category' href='/blog/categories/slide/'>slide</a>
   
 </span>
 
@@ -218,7 +210,7 @@ ModelとViewのあいだをとりもつコンポーネント</li>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ojima-h.github.com/blog/2012/04/14/rails-sourcecode-reading-0/" data-via="" data-counturl="http://ojima-h.github.com/blog/2012/04/14/rails-sourcecode-reading-0/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ojima-h.github.com/blog/2012/04/22/showoff-intro/" data-via="" data-counturl="http://ojima-h.github.com/blog/2012/04/22/showoff-intro/" >Tweet</a>
   
   
   
@@ -229,10 +221,8 @@ ModelとViewのあいだをとりもつコンポーネント</li>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/04/14/hello-world/" title="Previous Post: はじめましてのご挨拶">&laquo; はじめましてのご挨拶</a>
+        <a class="basic-alignment left" href="/blog/2012/04/16/cucumber-rspec-webrat-install/" title="Previous Post: cucumber + rspec + webrat の落とし穴">&laquo; cucumber + rspec + webrat の落とし穴</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/04/15/github-pages-and-octpress/" title="Next Post: Github pages + Octpress">Github pages + Octpress &raquo;</a>
       
     </p>
   </footer>

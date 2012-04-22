@@ -4,7 +4,7 @@
   <title><![CDATA[はげちらかしたメモ]]></title>
   <link href="http://ojima-h.github.com/atom.xml" rel="self"/>
   <link href="http://ojima-h.github.com/"/>
-  <updated>2012-04-15T14:30:27+09:00</updated>
+  <updated>2012-04-22T18:55:54+09:00</updated>
   <id>http://ojima-h.github.com/</id>
   <author>
     <name><![CDATA[ojima-h]]></name>
@@ -12,6 +12,179 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[showoff 使ってみた]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/04/22/showoff-intro/"/>
+    <updated>2012-04-22T14:00:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/04/22/showoff-intro</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/schacon/showoff">https://github.com/schacon/showoff</a></p>
+
+<p>Ruby + Markdown で HTML なスライドをつくれる、ということで、使ってみた。</p>
+
+<p>感想は</p>
+
+<ul>
+<li>Markdown やっぱり素敵</li>
+<li>Markdown から直にプレビューできる</li>
+<li>コマンド一発で github page に公開できるのが便利</li>
+<li>ある程度きれいにみせようと思ったら、CSS と javascript がんばって書
+かないといけない</li>
+<li>一枚のスライドのなかで内容を少しづつ見せる、ってことができなかった</li>
+</ul>
+
+
+<p>てかんじでした。</p>
+
+<hr />
+
+<p>使うまでの記録を書いておく。</p>
+
+<h2>とりあえず使う</h2>
+
+<p>まずはインストール。</p>
+
+<pre><code>gem install showoff
+</code></pre>
+
+<p>新規プレゼンテーションの作成</p>
+
+<pre><code>showoff create new_presentation
+cd new_presentation
+</code></pre>
+
+<p>すると、&#8221;one&#8221; というディレクトリの下に &#8220;01_slide.md&#8221; というファイルが
+できているはず。</p>
+
+<p>この &#8220;01_slide.md&#8221; にマークダウンで色々書いていけばよい。</p>
+
+<p><code>!SLIDE</code> という行があると、そこでスライドが切り替わる。</p>
+
+<p>コマンドラインから</p>
+
+<pre><code>$ showoff serve
+</code></pre>
+
+<p>を実行し、<code>localhost:9090</code> にアクセスすると、プレビューを見ることがで
+きる。</p>
+
+<p>ちなみに、Firefox + Vimperator を使っているとスライドの操作ができない
+ので注意。<code>Shift + escape</code> で Vimperator のキーを無効にすれば大丈夫。</p>
+
+<p>さらに、</p>
+
+<pre><code>$ showoff static
+</code></pre>
+
+<p>で、&#8221;static&#8221; というディレクトリができて、その中に整形された HTML が吐かれる。</p>
+
+<p>詳しい使いかたは <a href="https://github.com/schacon/showoff">https://github.com/schacon/showoff</a> を参照。</p>
+
+<h2>github pages への公開方法</h2>
+
+<p>まずは、ソース全体を公開するためのレポジトリを作成。
+全部のファイルをコミットする。</p>
+
+<p>そしたら、おもむろに</p>
+
+<pre><code>$ showoff github
+</code></pre>
+
+<p>これで、&#8221;gh_pages&#8221; というブランチに、<code>showoff static</code> されたコードをコ
+ミットしてくれる。</p>
+
+<p>あとは、<code>git push orgin gh-pages</code> するだけで、
+&#8220;username.github.com/repository-name/&#8221; にスライドが公開される。</p>
+
+<hr />
+
+<p>うーん、やっぱりちょっとづつ表示していくのが欲しいな&#8230;.
+javascript でできるのかな&#8230;</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[cucumber + rspec + webrat の落とし穴]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/04/16/cucumber-rspec-webrat-install/"/>
+    <updated>2012-04-16T21:17:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/04/16/cucumber-rspec-webrat-install</id>
+    <content type="html"><![CDATA[<p>cucumber + rspec + webrat ではまったのでメモ。</p>
+
+<h2>visit が効かない</h2>
+
+<pre><code>When /^visit "(.*)"$/ do |page|
+  visit page
+  p response
+end
+</code></pre>
+
+<p>ってやると、<code>nil</code> が表示される。。。</p>
+
+<p>調べていくと、こんなページを発見。</p>
+
+<p><a href="http://forums.pragprog.com/forums/95/topics/4951">http://forums.pragprog.com/forums/95/topics/4951</a></p>
+
+<p>とりあえず、features/support/env.rb に以下を追加。</p>
+
+<pre><code>require 'webrat'
+
+Webrat.configure do  |config|
+  config.mode = :rack
+end
+</code></pre>
+
+<p>そしたら、こんなエラーが発生。。。</p>
+
+<pre><code>No response yet. Request a page first. (Rack::Test::Error)
+</code></pre>
+
+<p><a href="http://forums.pragprog.com/forums/95/topics/8962">http://forums.pragprog.com/forums/95/topics/8962</a></p>
+
+<p>このページを参考に、step の定義を次のように変更.</p>
+
+<pre><code>When /^visit "(.*)"$/ do |url|
+  visit url
+  p page
+end
+</code></pre>
+
+<p>無事実行されました。</p>
+
+<h2>have_tag にブロックを渡せない</h2>
+
+<pre><code>page.body.should have_selector('a') do |a|
+  p a
+end
+</code></pre>
+
+<p>ってやっても期待する結果が得られない。。。</p>
+
+<p>未だ解決策みつからず。</p>
+
+<p>まぁ、いいか</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[tree]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/04/16/tree-command/"/>
+    <updated>2012-04-16T19:51:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/04/16/tree-command</id>
+    <content type="html"><![CDATA[<p>&#8220;tree&#8221; っていうコマンドが面白い。</p>
+
+<pre><code>emerge app-text/tree
+</code></pre>
+
+<p>こんなかんじで表示される</p>
+
+<pre><code>$ tree a
+a
+|-- b
+|   `-- c
+`-- d
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Github pages + Octpress]]></title>

@@ -9,9 +9,8 @@
   <meta name="author" content="ojima-h">
 
   
-  <meta name="description" content="https://github.com/schacon/showoff Ruby + Markdown で HTML なスライドをつくれる、ということで、使ってみた。 感想は Markdown やっぱり素敵
-Markdown から直にプレビューできる
-コマンド一発で github page &hellip;">
+  <meta name="description" content="前半は Ruby の基礎のお話。 http://i.loveruby.net/ja/rhg/book/minimum.html に沿って話した。 要は、全てのモノはオブジェクトである、というお話。 話したこととしては、 クラスは Class というクラスのインスタンスである。
+モジュールは &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +65,131 @@ Markdown から直にプレビューできる
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/04/22/rsr-1/">Rails SourceCode Reading #1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-22T19:42:00+09:00" pubdate data-updated="true">Apr 22<span>nd</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>前半は Ruby の基礎のお話。</h2>
+
+<p><a href="http://i.loveruby.net/ja/rhg/book/minimum.html">http://i.loveruby.net/ja/rhg/book/minimum.html</a> に沿って話した。</p>
+
+<p>要は、<strong>全てのモノはオブジェクトである</strong>、というお話。</p>
+
+<p>話したこととしては、</p>
+
+<ul>
+<li>クラスは Class というクラスのインスタンスである。</li>
+<li>モジュールは Module というクラスのインスタンスである。</li>
+<li>Module クラスは Class クラスのインスタンスである。</li>
+<li>Class クラスは Class クラスのインスタンスである。</li>
+<li><p>すべてのクラスは superclass に Object を持つ。
+Object クラスの superclass は nil である。</p>
+
+<p>(今は、Object クラスの superclass は BasicObject になっているぽい。)</p>
+
+<p>(今日話したときは、「全てのオブジェクトは Object を superclass に持つ」とか言ってた気がする)</p></li>
+</ul>
+
+
+<p>とかとか。</p>
+
+<p>一応整理しておくと、</p>
+
+<ul>
+<li>オブジェクト間の関係
+
+<ul>
+<li>クラス - インスタンスの関係</li>
+<li>is_a 関係</li>
+</ul>
+</li>
+<li>クラス間の関係
+
+<ul>
+<li>継承関係</li>
+<li>ネスト</li>
+</ul>
+</li>
+</ul>
+
+
+<p>今日話した時は、クラス - インスタンスの関係と is_a 関係を混同していた&#8230;</p>
+
+<h3>is_a 関係について</h3>
+
+<p><a href="http://d.hatena.ne.jp/willnet/20080523/1211512760">http://d.hatena.ne.jp/willnet/20080523/1211512760</a></p>
+
+<p><code>foo.is_a? Foo</code> が真になるのは、</p>
+
+<ul>
+<li>foo が Foo のインスタンスであるとき</li>
+<li>foo が Foo のサブクラスのインスタンスであるとき</li>
+<li>foo が モジュール Foo をインクルードしたクラスのインスタンスであるとき</li>
+<li>foo が モジュール Foo をインクルードしたクラスのサブクラスのインスタンスであるとき</li>
+</ul>
+
+
+<p>あとは、特異メソッドの話。</p>
+
+<p>結局、<code>include</code> と <code>extend</code> の違いを説明したかっただけな気がする。</p>
+
+<h2>後半は ActiveRecord の解読</h2>
+
+<p><a href="http://ojima-h.github.com/rails-sourcecode-reading-slide-1/">http://ojima-h.github.com/rails-sourcecode-reading-slide-1/</a></p>
+
+<pre><code>@@@ ruby
+rails generate scaffold Foo foo:string
+</code></pre>
+
+<p>てやったときにできる <code>Foo#foo</code> ていうメソッドがどうやって定義されているのかを解説した。</p>
+
+<ul>
+<li>missing_method コワイ</li>
+<li>eval コワイ</li>
+</ul>
+
+
+<p>という結論でした。</p>
+
+<h2>ツールについて</h2>
+
+<ul>
+<li>showoff が便利</li>
+<li>rdefs.el が便利だけど、使いにくい。
+せめて、バッファがリードオンリーなのをなんとかしたい。</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -643,6 +767,10 @@ ModelとViewのあいだをとりもつコンポーネント</li>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/04/22/rsr-1/">Rails SourceCode Reading #1</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/04/22/showoff-intro/">showoff 使ってみた</a>
       </li>
     
@@ -656,10 +784,6 @@ ModelとViewのあいだをとりもつコンポーネント</li>
     
       <li class="post">
         <a href="/blog/2012/04/15/github-pages-and-octpress/">Github pages + Octpress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/04/14/rails-sourcecode-reading-0/">第0回 Railsソースコードリーディング</a>
       </li>
     
   </ul>

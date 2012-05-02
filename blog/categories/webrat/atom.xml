@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: webrat | はげちらかしたメモ]]></title>
+  <title><![CDATA[Category: webrat | おっきメモ]]></title>
   <link href="http://ojima-h.github.com/blog/categories/webrat/atom.xml" rel="self"/>
   <link href="http://ojima-h.github.com/"/>
-  <updated>2012-05-03T03:28:58+09:00</updated>
+  <updated>2012-05-03T03:43:36+09:00</updated>
   <id>http://ojima-h.github.com/</id>
   <author>
     <name><![CDATA[ojima-h]]></name>

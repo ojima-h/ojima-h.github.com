@@ -9,8 +9,7 @@
   <meta name="author" content="ojima-h">
 
   
-  <meta name="description" content="前半は Ruby の基礎のお話。 http://i.loveruby.net/ja/rhg/book/minimum.html に沿って話した。 要は、全てのモノはオブジェクトである、というお話。 話したこととしては、 クラスは Class というクラスのインスタンスである。
-モジュールは &hellip;">
+  <meta name="description" content="大学のプロキシ内からだと svn プロトコルが通らず、emacs-overlay を layman に追加できなかった。 それを無理矢理なんとかするまでの記録。 layman -a emacs するもタイムアウトのエラーが発生。 /usr/bin/svn co svn://overlays. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +64,198 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/03/gentoo-emacs-overlay-2/">Emacs-overlay で Elisp を管理 &#8211; その2 (プロキシ越しにsvnプロトコル)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-03T02:55:00+09:00" pubdate data-updated="true">May 3<span>rd</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>大学のプロキシ内からだと svn プロトコルが通らず、emacs-overlay を layman に追加できなかった。</p>
+
+<p>それを無理矢理なんとかするまでの記録。</p>
+
+<ol>
+<li><p><code>layman -a emacs</code> するもタイムアウトのエラーが発生。</p>
+
+<p><code>/usr/bin/svn co svn://overlays.gentoo.org/proj/emacs/emacs-overlay/@ /var/lib/layman/emacs</code> でコケるようだ。</p></li>
+<li><p>直接、<code>/usr/bin/svn co svn://overlays.gentoo.org/proj/emacs/emacs-overlay/@ emacs</code> を実行してみるも、やはりムリ。</p></li>
+<li><p>ならばと、<code>/usr/bin/svn co https://overlays.gentoo.org/proj/emacs/emacs-overlay/@ emacs</code> を実行してみるも、やはりムリ。</p>
+
+<pre><code>svn: パス 'https://overlays.gentoo.org/proj/emacs/emacs-overlay' が見つかりません
+</code></pre>
+
+<p>とか言われる。</p></li>
+<li><p>困る。</p>
+
+<p>SSHトンネル掘ってナントカ。。。とかヨクワカラナイコトを考えた挙句、VPS に emacs-overlay のクローンを置いて http でアクセスすることにする。
+ちなみに、VPS の方は Debian です。</p></li>
+</ol>
+
+
+<h2>VPS に emacs-overlay のクローンを置いて http でアクセス</h2>
+
+<p>Apache はセットアップ済みで、公開ディレクトリは /var/www であるものとします。</p>
+
+<ol>
+<li><p>git-svn をインストール</p>
+
+<pre><code>aptitude install git-svn
+</code></pre></li>
+<li><p>emacs-overlay をコピーしてくる。</p>
+
+<pre><code>git svn clone svn://overlays.gentoo.org/proj/emacs/emacs-overlay/ emacs-overlay
+</code></pre></li>
+<li><p>公開ディレクトリに bare レポジトリを置く。</p>
+
+<pre><code>cd /var/www/
+git clone /path/to/emacs-overlay emacs-overlay.git --bare
+</code></pre></li>
+</ol>
+
+
+<p>これで、<code>git clone http://xxxxxx/emacs-overlay.git</code> でクローンできるようになっているはず。</p>
+
+<h2>layman の overlay のリストに追加する</h2>
+
+<ol>
+<li><p>/var/lib/layman/my-list.xml を作成して、次のような内容を書く。</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE repositories SYSTEM "/dtd/repositories.dtd"&gt;
+&lt;repositories xmlns="" version="1.0"&gt;
+  &lt;repo quality="experimental" status="official"&gt;
+    &lt;name&gt;&lt;![CDATA[emacs-clone]]&gt;&lt;/name&gt;
+    &lt;description&gt;&lt;![CDATA[Provide Emacs related ebuilds which are a bit experimental or
+    work-in-progress. Don't rely on them, but don't hesitate to file bugs or
+    write emails.]]&gt;&lt;/description&gt;
+    &lt;homepage&gt;http://your/homepage/uri&lt;/homepage&gt;
+    &lt;owner type="project"&gt;
+      &lt;email&gt;sample@example.com&lt;/email&gt;
+    &lt;/owner&gt;
+    &lt;source type="git"&gt;http://server/uri/emacs-overlay.git&lt;/source&gt;
+  &lt;/repo&gt;
+&lt;/repositories&gt;
+</code></pre></li>
+<li><p>/etc/layman/layman.cfg に次のような内容を書く:</p>
+
+<pre><code>.....
+
+overlays  : http://www.gentoo.org/proj/en/overlays/repositories.xml
+            file:///var/lib/layman/my-list.xml
+
+.....
+</code></pre></li>
+<li><p>layman を更新する。</p>
+
+<pre><code>layman -S
+</code></pre></li>
+<li><p><code>layman -L</code> を実行して、いま追加したオーバレイが表示されれば OK.</p></li>
+</ol>
+
+
+<hr />
+
+<p>振り返ってみると、がんばったわりに得るものが少ない気が。。。</p>
+
+<p>あとは、更新が面倒くさそう。Git の bare レポジトリって直接更新できないのかな&#8230;</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/02/gentoo-emacs-overlay/">Emacs-overlay で Elisp をパッケージ管理</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-02T22:59:00+09:00" pubdate data-updated="true">May 2<span>nd</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>関西 Emacs で Elisp のパッケージ管理の話が出てきたことだし、
+portage で Elisp を管理してみることにする。</p>
+
+<p>こういうのって、まずは Overlay から見てみるものなのかな&#8230;</p>
+
+<p>ということで、emacs-overlay を使ってみる。</p>
+
+<p>参考: <a href="http://overlays.gentoo.org/proj/emacs/">http://overlays.gentoo.org/proj/emacs/</a></p>
+
+<ol>
+<li><p>layman をインストール</p>
+
+<pre><code>emerge layman
+</code></pre></li>
+<li><p>emacs-overlay を追加</p>
+
+<pre><code>layman -a emacs
+</code></pre></li>
+<li><p>layman をソースに追加。</p>
+
+<pre><code>echo "source /var/lib/layman/make.conf" &gt;&gt; /etc/make.conf
+</code></pre></li>
+</ol>
+
+
+<p><code>/var/lib/layman/emacs/app-emacs/</code> とかを見るとインストールできる Elisp が見える。</p>
+
+<p>anything とか evil とかあるけど、、、、<br/>
+あんまり数は無いのね&#8230;.</p>
+
+<hr />
+
+<p>ちなみに大学のプロキシ内からだと、svn プロトコルが通らずハマったけれど、
+それはまた別のお話。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -767,6 +958,14 @@ ModelとViewのあいだをとりもつコンポーネント</li>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/05/03/gentoo-emacs-overlay-2/">emacs-overlay で Elisp を管理 &#8211; その2 (プロキシ越しにsvnプロトコル)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/05/02/gentoo-emacs-overlay/">emacs-overlay で Elisp をパッケージ管理</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/04/22/rsr-1/">Rails SourceCode Reading #1</a>
       </li>
     
@@ -776,14 +975,6 @@ ModelとViewのあいだをとりもつコンポーネント</li>
     
       <li class="post">
         <a href="/blog/2012/04/16/cucumber-rspec-webrat-install/">cucumber + rspec + webrat の落とし穴</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/04/16/tree-command/">tree</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/04/15/github-pages-and-octpress/">Github pages + Octpress</a>
       </li>
     
   </ul>

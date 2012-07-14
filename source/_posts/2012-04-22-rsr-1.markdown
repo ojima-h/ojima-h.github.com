@@ -1,0 +1,80 @@
+---
+layout: post
+title: "Rails SourceCode Reading #1"
+date: 2012-04-22 19:42
+comments: true
+categories: rails
+---
+
+前半は Ruby の基礎のお話。
+----------
+
+<http://i.loveruby.net/ja/rhg/book/minimum.html> に沿って話した。
+
+要は、__全てのモノはオブジェクトである__、というお話。
+
+話したこととしては、
+
+-   クラスは Class というクラスのインスタンスである。
+-   モジュールは Module というクラスのインスタンスである。
+-   Module クラスは Class クラスのインスタンスである。
+-   Class クラスは Class クラスのインスタンスである。
+-   すべてのクラスは superclass に Object を持つ。
+	Object クラスの superclass は nil である。
+
+	(今は、Object クラスの superclass は BasicObject になっているぽい。)
+	
+	(今日話したときは、「全てのオブジェクトは Object を superclass に持つ」とか言ってた気がする)
+
+とかとか。
+
+一応整理しておくと、
+
+-   オブジェクト間の関係
+	-   クラス - インスタンスの関係
+	-   is\_a 関係
+-   クラス間の関係
+	-   継承関係
+	-   ネスト
+	
+今日話した時は、クラス - インスタンスの関係と is\_a 関係を混同していた...
+
+### is\_a 関係について
+
+<http://d.hatena.ne.jp/willnet/20080523/1211512760>
+
+`foo.is_a? Foo` が真になるのは、
+
+-   foo が Foo のインスタンスであるとき
+-   foo が Foo のサブクラスのインスタンスであるとき
+-   foo が モジュール Foo をインクルードしたクラスのインスタンスであるとき
+-   foo が モジュール Foo をインクルードしたクラスのサブクラスのインスタンスであるとき
+
+あとは、特異メソッドの話。
+
+結局、`include` と `extend` の違いを説明したかっただけな気がする。
+
+
+
+後半は ActiveRecord の解読
+----------
+
+<http://ojima-h.github.com/rails-sourcecode-reading-slide-1/>
+
+	@@@ ruby
+	rails generate scaffold Foo foo:string
+	
+てやったときにできる `Foo#foo` ていうメソッドがどうやって定義されているのかを解説した。
+
+-   missing_method コワイ
+-   eval コワイ
+
+という結論でした。
+
+
+ツールについて
+----------
+
+-   showoff が便利
+-   rdefs.el が便利だけど、使いにくい。
+	せめて、バッファがリードオンリーなのをなんとかしたい。

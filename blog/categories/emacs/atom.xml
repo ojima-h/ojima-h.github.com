@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: emacs | おっきメモ]]></title>
+  <title><![CDATA[Category: emacs | My Octopress Blog]]></title>
   <link href="http://ojima-h.github.com/blog/categories/emacs/atom.xml" rel="self"/>
   <link href="http://ojima-h.github.com/"/>
-  <updated>2012-05-03T03:43:36+09:00</updated>
+  <updated>2012-07-15T05:06:20+09:00</updated>
   <id>http://ojima-h.github.com/</id>
   <author>
-    <name><![CDATA[ojima-h]]></name>
+    <name><![CDATA[Your Name]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: japanese | My Octopress Blog]]></title>
+  <link href="http://ojima-h.github.com/blog/categories/japanese/atom.xml" rel="self"/>
+  <link href="http://ojima-h.github.com/"/>
+  <updated>2012-07-15T05:06:20+09:00</updated>
+  <id>http://ojima-h.github.com/</id>
+  <author>
+    <name><![CDATA[Your Name]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[dzenで日本語]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/07/15/dzen-with-japanese/"/>
+    <updated>2012-07-15T04:38:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/07/15/dzen-with-japanese</id>
+    <content type="html"><![CDATA[<p>dzen で日本語を表示するまでのまとめ。</p>
+
+<p>portage で提供されている dzen をインストールしたところ、日本語が化けた。</p>
+
+<p>どうやら、xft のサポートをつける必要があるみたい。</p>
+
+<p>ところが、通常のレポジトリで提供されているソースは xft に対応していないようだ。</p>
+
+<p>というわけで、<a href="https://github.com/robm/dzen">https://github.com/robm/dzen</a> から最新版をもってきて、普通に make してインストールしたら、表示できました。</p>
+
+<p>ちなみに、フォントを指定してやらないと、かなり汚い。アンチエイリアスも設定できるようだ。</p>
+
+<pre><code>dzen2 -fn 'xft\
+          \:IPAGothic\
+          \:pixelsize=13\
+          \:weight=regular\
+          \:width=semicondensed\
+          \:dpi=96\
+          \:hinting=true\
+          \:hintstyle=hintslight\
+          \:antialias=true\
+          \:rgba=rgb\
+          \:lcdfilter=lcdlight\
+          \'
+</code></pre>
+
+<p>一応ebuildをのっけてみる。。。</p>
+
+<p><a href="https://github.com/ojima-h/my-overlays/blob/master/x11-misc/dzen/dzen-9999.ebuild">https://github.com/ojima-h/my-overlays/blob/master/x11-misc/dzen/dzen-9999.ebuild</a></p>
+]]></content>
+  </entry>
+  
+</feed>

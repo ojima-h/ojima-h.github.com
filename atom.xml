@@ -1,17 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[おっきメモ]]></title>
+  <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://ojima-h.github.com/atom.xml" rel="self"/>
   <link href="http://ojima-h.github.com/"/>
-  <updated>2012-05-03T03:43:36+09:00</updated>
+  <updated>2012-07-15T05:06:20+09:00</updated>
   <id>http://ojima-h.github.com/</id>
   <author>
-    <name><![CDATA[ojima-h]]></name>
+    <name><![CDATA[Your Name]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[dzenで日本語]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/07/15/dzen-with-japanese/"/>
+    <updated>2012-07-15T04:38:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/07/15/dzen-with-japanese</id>
+    <content type="html"><![CDATA[<p>dzen で日本語を表示するまでのまとめ。</p>
+
+<p>portage で提供されている dzen をインストールしたところ、日本語が化けた。</p>
+
+<p>どうやら、xft のサポートをつける必要があるみたい。</p>
+
+<p>ところが、通常のレポジトリで提供されているソースは xft に対応していないようだ。</p>
+
+<p>というわけで、<a href="https://github.com/robm/dzen">https://github.com/robm/dzen</a> から最新版をもってきて、普通に make してインストールしたら、表示できました。</p>
+
+<p>ちなみに、フォントを指定してやらないと、かなり汚い。アンチエイリアスも設定できるようだ。</p>
+
+<pre><code>dzen2 -fn 'xft\
+          \:IPAGothic\
+          \:pixelsize=13\
+          \:weight=regular\
+          \:width=semicondensed\
+          \:dpi=96\
+          \:hinting=true\
+          \:hintstyle=hintslight\
+          \:antialias=true\
+          \:rgba=rgb\
+          \:lcdfilter=lcdlight\
+          \'
+</code></pre>
+
+<p>一応ebuildをのっけてみる。。。</p>
+
+<p><a href="https://github.com/ojima-h/my-overlays/blob/master/x11-misc/dzen/dzen-9999.ebuild">https://github.com/ojima-h/my-overlays/blob/master/x11-misc/dzen/dzen-9999.ebuild</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ip address and network address]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/05/09/ip-address-and-network-address/"/>
+    <updated>2012-05-09T03:17:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/05/09/ip-address-and-network-address</id>
+    <content type="html"><![CDATA[<p>ネットワークについて勉強していたので、そのまとめ兼メモ。</p>
+
+<hr />
+
+<p>192.168.0.0 ~ 192.168.255.255 のIPを用いてネットワークを構築しようと考えます。</p>
+
+<p>このとき、全てのコンピュータを 同じネットワーク下 (192.168.0.0/16) に置
+いてもいいのですが、それだと管理が大変です。そこで、サブネットに分割す
+ることを考えます。</p>
+
+<p>部署Aには、IPは 192.168.1.0 ~ 192.168.1.255、 サブネットは 192.168.1.0/24 を用いてネットワークを構築するよう依頼します。</p>
+
+<p>部署Bには、IPは 192.168.2.0 ~ 192.168.2.255、 サブネットは 192.168.2.0/24 を用いてネットワークを構築するよう依頼します。</p>
+
+<p>それぞれのネットワークに属するコンピュータはハブを介して接続します。</p>
+
+<p>これらのネットワーク同士を接続するために、もうひとつサブネット
+192.168.3.0/24 を用意します。更に、サブネット 192.168.1.0/24、
+192.168.2.0/24 のそれぞれの内部にルータを設置し、そのルータの他方の口を
+192.168.3.0/24 のネットワークにつなぎます。これで、192.168.1.0/24 と
+192.168.2.0/24 の間で相互に通信することができます。</p>
+
+<p>これらのプライベートネットワークからインターネットに接続するには、
+192.168.3.0/24 のネットワークの中にNAT機能を備えたルータを設置する必要
+があるでしょう。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[emacs-overlay で Elisp を管理 -- その2 (プロキシ越しにsvnプロトコル)]]></title>

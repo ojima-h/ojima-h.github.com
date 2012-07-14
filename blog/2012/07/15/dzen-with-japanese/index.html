@@ -5,13 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>はじめましてのご挨拶 - My Octopress Blog</title>
+  <title>dzenで日本語 - My Octopress Blog</title>
   <meta name="author" content="Your Name">
 
   
-  <meta name="description" content="ブログはじめました Railsソースコードリーディングを機に、いまさらながらブログなど始めてみ
-ました。 github page + octpress + jekyll 環境でやってます。 テストがてら、初めての投稿。。。
-">
+  <meta name="description" content="dzen で日本語を表示するまでのまとめ。 portage で提供されている dzen をインストールしたところ、日本語が化けた。 どうやら、xft のサポートをつける必要があるみたい。 ところが、通常のレポジトリで提供されているソースは xft に対応していないようだ。 というわけで、https &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ojima-h.github.com/blog/2012/04/14/hello-world">
+  <link rel="canonical" href="http://ojima-h.github.com/blog/2012/07/15/dzen-with-japanese">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -69,7 +67,7 @@
   
   <header>
     
-      <h1 class="entry-title">はじめましてのご挨拶</h1>
+      <h1 class="entry-title">Dzenで日本語</h1>
     
     
       <p class="meta">
@@ -85,21 +83,42 @@
   
 
 
-<time datetime="2012-04-14T23:31:00+09:00" pubdate data-updated="true">Apr 14<span>th</span>, 2012</time>
+<time datetime="2012-07-15T04:38:00+09:00" pubdate data-updated="true">Jul 15<span>th</span>, 2012</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><h2>ブログはじめました</h2>
+<div class="entry-content"><p>dzen で日本語を表示するまでのまとめ。</p>
 
-<p>Railsソースコードリーディングを機に、いまさらながらブログなど始めてみ
-ました。</p>
+<p>portage で提供されている dzen をインストールしたところ、日本語が化けた。</p>
 
-<p>github page + octpress + jekyll 環境でやってます。</p>
+<p>どうやら、xft のサポートをつける必要があるみたい。</p>
 
-<p>テストがてら、初めての投稿。。。</p>
+<p>ところが、通常のレポジトリで提供されているソースは xft に対応していないようだ。</p>
+
+<p>というわけで、<a href="https://github.com/robm/dzen">https://github.com/robm/dzen</a> から最新版をもってきて、普通に make してインストールしたら、表示できました。</p>
+
+<p>ちなみに、フォントを指定してやらないと、かなり汚い。アンチエイリアスも設定できるようだ。</p>
+
+<pre><code>dzen2 -fn 'xft\
+          \:IPAGothic\
+          \:pixelsize=13\
+          \:weight=regular\
+          \:width=semicondensed\
+          \:dpi=96\
+          \:hinting=true\
+          \:hintstyle=hintslight\
+          \:antialias=true\
+          \:rgba=rgb\
+          \:lcdfilter=lcdlight\
+          \'
+</code></pre>
+
+<p>一応ebuildをのっけてみる。。。</p>
+
+<p><a href="https://github.com/ojima-h/my-overlays/blob/master/x11-misc/dzen/dzen-9999.ebuild">https://github.com/ojima-h/my-overlays/blob/master/x11-misc/dzen/dzen-9999.ebuild</a></p>
 </div>
 
 
@@ -122,12 +141,12 @@
   
 
 
-<time datetime="2012-04-14T23:31:00+09:00" pubdate data-updated="true">Apr 14<span>th</span>, 2012</time>
+<time datetime="2012-07-15T04:38:00+09:00" pubdate data-updated="true">Jul 15<span>th</span>, 2012</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/diary/'>diary</a>
+    <a class='category' href='/blog/categories/dzen/'>dzen</a>, <a class='category' href='/blog/categories/japanese/'>japanese</a>, <a class='category' href='/blog/categories/xmonad/'>xmonad</a>
   
 </span>
 
@@ -136,7 +155,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ojima-h.github.com/blog/2012/04/14/hello-world/" data-via="" data-counturl="http://ojima-h.github.com/blog/2012/04/14/hello-world/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ojima-h.github.com/blog/2012/07/15/dzen-with-japanese/" data-via="" data-counturl="http://ojima-h.github.com/blog/2012/07/15/dzen-with-japanese/" >Tweet</a>
   
   
   
@@ -145,8 +164,8 @@
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2012/05/09/ip-address-and-network-address/" title="Previous Post: ip address and network address">&laquo; ip address and network address</a>
       
-        <a class="basic-alignment right" href="/blog/2012/04/14/rails-sourcecode-reading-0/" title="Next Post: 第0回 Railsソースコードリーディング">第0回 Railsソースコードリーディング &raquo;</a>
       
     </p>
   </footer>

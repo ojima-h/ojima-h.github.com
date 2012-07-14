@@ -5,13 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>はじめましてのご挨拶 - My Octopress Blog</title>
+  <title>ip address and network address - My Octopress Blog</title>
   <meta name="author" content="Your Name">
 
   
-  <meta name="description" content="ブログはじめました Railsソースコードリーディングを機に、いまさらながらブログなど始めてみ
-ました。 github page + octpress + jekyll 環境でやってます。 テストがてら、初めての投稿。。。
-">
+  <meta name="description" content="ネットワークについて勉強していたので、そのまとめ兼メモ。 192.168.0.0 ~ 192.168.255.255 のIPを用いてネットワークを構築しようと考えます。 このとき、全てのコンピュータを 同じネットワーク下 (192.168.0.0/16) に置
+いてもいいのですが、 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ojima-h.github.com/blog/2012/04/14/hello-world">
+  <link rel="canonical" href="http://ojima-h.github.com/blog/2012/05/09/ip-address-and-network-address">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -69,7 +68,7 @@
   
   <header>
     
-      <h1 class="entry-title">はじめましてのご挨拶</h1>
+      <h1 class="entry-title">Ip Address and Network Address</h1>
     
     
       <p class="meta">
@@ -85,21 +84,38 @@
   
 
 
-<time datetime="2012-04-14T23:31:00+09:00" pubdate data-updated="true">Apr 14<span>th</span>, 2012</time>
+<time datetime="2012-05-09T03:17:00+09:00" pubdate data-updated="true">May 9<span>th</span>, 2012</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><h2>ブログはじめました</h2>
+<div class="entry-content"><p>ネットワークについて勉強していたので、そのまとめ兼メモ。</p>
 
-<p>Railsソースコードリーディングを機に、いまさらながらブログなど始めてみ
-ました。</p>
+<hr />
 
-<p>github page + octpress + jekyll 環境でやってます。</p>
+<p>192.168.0.0 ~ 192.168.255.255 のIPを用いてネットワークを構築しようと考えます。</p>
 
-<p>テストがてら、初めての投稿。。。</p>
+<p>このとき、全てのコンピュータを 同じネットワーク下 (192.168.0.0/16) に置
+いてもいいのですが、それだと管理が大変です。そこで、サブネットに分割す
+ることを考えます。</p>
+
+<p>部署Aには、IPは 192.168.1.0 ~ 192.168.1.255、 サブネットは 192.168.1.0/24 を用いてネットワークを構築するよう依頼します。</p>
+
+<p>部署Bには、IPは 192.168.2.0 ~ 192.168.2.255、 サブネットは 192.168.2.0/24 を用いてネットワークを構築するよう依頼します。</p>
+
+<p>それぞれのネットワークに属するコンピュータはハブを介して接続します。</p>
+
+<p>これらのネットワーク同士を接続するために、もうひとつサブネット
+192.168.3.0/24 を用意します。更に、サブネット 192.168.1.0/24、
+192.168.2.0/24 のそれぞれの内部にルータを設置し、そのルータの他方の口を
+192.168.3.0/24 のネットワークにつなぎます。これで、192.168.1.0/24 と
+192.168.2.0/24 の間で相互に通信することができます。</p>
+
+<p>これらのプライベートネットワークからインターネットに接続するには、
+192.168.3.0/24 のネットワークの中にNAT機能を備えたルータを設置する必要
+があるでしょう。</p>
 </div>
 
 
@@ -122,21 +138,15 @@
   
 
 
-<time datetime="2012-04-14T23:31:00+09:00" pubdate data-updated="true">Apr 14<span>th</span>, 2012</time>
+<time datetime="2012-05-09T03:17:00+09:00" pubdate data-updated="true">May 9<span>th</span>, 2012</time>
       
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/diary/'>diary</a>
-  
-</span>
 
 
     </p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ojima-h.github.com/blog/2012/04/14/hello-world/" data-via="" data-counturl="http://ojima-h.github.com/blog/2012/04/14/hello-world/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ojima-h.github.com/blog/2012/05/09/ip-address-and-network-address/" data-via="" data-counturl="http://ojima-h.github.com/blog/2012/05/09/ip-address-and-network-address/" >Tweet</a>
   
   
   
@@ -145,8 +155,10 @@
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2012/05/03/gentoo-emacs-overlay-2/" title="Previous Post: emacs-overlay で Elisp を管理 -- その2 (プロキシ越しにsvnプロトコル)">&laquo; emacs-overlay で Elisp を管理 -- その2 (プロキシ越しにsvnプロトコル)</a>
       
-        <a class="basic-alignment right" href="/blog/2012/04/14/rails-sourcecode-reading-0/" title="Next Post: 第0回 Railsソースコードリーディング">第0回 Railsソースコードリーディング &raquo;</a>
+      
+        <a class="basic-alignment right" href="/blog/2012/07/15/dzen-with-japanese/" title="Next Post: dzenで日本語">dzenで日本語 &raquo;</a>
       
     </p>
   </footer>

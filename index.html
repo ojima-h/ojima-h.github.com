@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>おっきメモ</title>
-  <meta name="author" content="ojima-h">
+  <title>My Octopress Blog</title>
+  <meta name="author" content="Your Name">
 
   
-  <meta name="description" content="大学のプロキシ内からだと svn プロトコルが通らず、emacs-overlay を layman に追加できなかった。 それを無理矢理なんとかするまでの記録。 layman -a emacs するもタイムアウトのエラーが発生。 /usr/bin/svn co svn://overlays. &hellip;">
+  <meta name="description" content="dzen で日本語を表示するまでのまとめ。 portage で提供されている dzen をインストールしたところ、日本語が化けた。 どうやら、xft のサポートをつける必要があるみたい。 ところが、通常のレポジトリで提供されているソースは xft に対応していないようだ。 というわけで、https &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -24,7 +24,7 @@
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="/javascripts/ender.js"></script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <link href="/atom.xml" rel="alternate" title="おっきメモ" type="application/atom+xml">
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -35,9 +35,9 @@
 
 <body   >
   <header role="banner"><hgroup>
-  <h1><a href="/">おっきメモ</a></h1>
+  <h1><a href="/">My Octopress Blog</a></h1>
   
-    <h2>ムクッ</h2>
+    <h2>A blogging framework for hackers.</h2>
   
 </hgroup>
 
@@ -64,6 +64,130 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/15/dzen-with-japanese/">Dzenで日本語</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-15T04:38:00+09:00" pubdate data-updated="true">Jul 15<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>dzen で日本語を表示するまでのまとめ。</p>
+
+<p>portage で提供されている dzen をインストールしたところ、日本語が化けた。</p>
+
+<p>どうやら、xft のサポートをつける必要があるみたい。</p>
+
+<p>ところが、通常のレポジトリで提供されているソースは xft に対応していないようだ。</p>
+
+<p>というわけで、<a href="https://github.com/robm/dzen">https://github.com/robm/dzen</a> から最新版をもってきて、普通に make してインストールしたら、表示できました。</p>
+
+<p>ちなみに、フォントを指定してやらないと、かなり汚い。アンチエイリアスも設定できるようだ。</p>
+
+<pre><code>dzen2 -fn 'xft\
+          \:IPAGothic\
+          \:pixelsize=13\
+          \:weight=regular\
+          \:width=semicondensed\
+          \:dpi=96\
+          \:hinting=true\
+          \:hintstyle=hintslight\
+          \:antialias=true\
+          \:rgba=rgb\
+          \:lcdfilter=lcdlight\
+          \'
+</code></pre>
+
+<p>一応ebuildをのっけてみる。。。</p>
+
+<p><a href="https://github.com/ojima-h/my-overlays/blob/master/x11-misc/dzen/dzen-9999.ebuild">https://github.com/ojima-h/my-overlays/blob/master/x11-misc/dzen/dzen-9999.ebuild</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/09/ip-address-and-network-address/">Ip Address and Network Address</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-09T03:17:00+09:00" pubdate data-updated="true">May 9<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>ネットワークについて勉強していたので、そのまとめ兼メモ。</p>
+
+<hr />
+
+<p>192.168.0.0 ~ 192.168.255.255 のIPを用いてネットワークを構築しようと考えます。</p>
+
+<p>このとき、全てのコンピュータを 同じネットワーク下 (192.168.0.0/16) に置
+いてもいいのですが、それだと管理が大変です。そこで、サブネットに分割す
+ることを考えます。</p>
+
+<p>部署Aには、IPは 192.168.1.0 ~ 192.168.1.255、 サブネットは 192.168.1.0/24 を用いてネットワークを構築するよう依頼します。</p>
+
+<p>部署Bには、IPは 192.168.2.0 ~ 192.168.2.255、 サブネットは 192.168.2.0/24 を用いてネットワークを構築するよう依頼します。</p>
+
+<p>それぞれのネットワークに属するコンピュータはハブを介して接続します。</p>
+
+<p>これらのネットワーク同士を接続するために、もうひとつサブネット
+192.168.3.0/24 を用意します。更に、サブネット 192.168.1.0/24、
+192.168.2.0/24 のそれぞれの内部にルータを設置し、そのルータの他方の口を
+192.168.3.0/24 のネットワークにつなぎます。これで、192.168.1.0/24 と
+192.168.2.0/24 の間で相互に通信することができます。</p>
+
+<p>これらのプライベートネットワークからインターネットに接続するには、
+192.168.3.0/24 のネットワークの中にNAT機能を備えたルータを設置する必要
+があるでしょう。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -904,50 +1028,9 @@ ModelとViewのあいだをとりもつコンポーネント</li>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/04/14/hello-world/">はじめましてのご挨拶</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-04-14T23:31:00+09:00" pubdate data-updated="true">Apr 14<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>ブログはじめました</h2>
-
-<p>Railsソースコードリーディングを機に、いまさらながらブログなど始めてみ
-ました。</p>
-
-<p>github page + octpress + jekyll 環境でやってます。</p>
-
-<p>テストがてら、初めての投稿。。。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -960,6 +1043,14 @@ ModelとViewのあいだをとりもつコンポーネント</li>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/07/15/dzen-with-japanese/">dzenで日本語</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/05/09/ip-address-and-network-address/">ip address and network address</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/05/03/gentoo-emacs-overlay-2/">emacs-overlay で Elisp を管理 &#8211; その2 (プロキシ越しにsvnプロトコル)</a>
       </li>
     
@@ -969,14 +1060,6 @@ ModelとViewのあいだをとりもつコンポーネント</li>
     
       <li class="post">
         <a href="/blog/2012/04/22/rsr-1/">Rails SourceCode Reading #1</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/04/22/showoff-intro/">showoff 使ってみた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/04/16/cucumber-rspec-webrat-install/">cucumber + rspec + webrat の落とし穴</a>
       </li>
     
   </ul>
@@ -993,7 +1076,7 @@ ModelとViewのあいだをとりもつコンポーネント</li>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2012 - ojima-h -
+  Copyright &copy; 2012 - Your Name -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
@@ -1001,15 +1084,6 @@ ModelとViewのあいだをとりもつコンポーネント</li>
   
 
 
-
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) {return;}
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
 
 
 

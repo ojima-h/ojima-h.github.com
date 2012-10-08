@@ -4,7 +4,7 @@
   <title><![CDATA[Category: japanese | My Octopress Blog]]></title>
   <link href="http://ojima-h.github.com/blog/categories/japanese/atom.xml" rel="self"/>
   <link href="http://ojima-h.github.com/"/>
-  <updated>2012-07-15T05:06:20+09:00</updated>
+  <updated>2012-10-08T19:07:04+09:00</updated>
   <id>http://ojima-h.github.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -28,7 +28,7 @@
 
 <p>というわけで、<a href="https://github.com/robm/dzen">https://github.com/robm/dzen</a> から最新版をもってきて、普通に make してインストールしたら、表示できました。</p>
 
-<p>ちなみに、フォントを指定してやらないと、かなり汚い。アンチエイリアスも設定できるようだ。</p>
+<p>ちなみに、フォントを指定してやらないと、かなり汚い。アンチエイリアスも設定できた。</p>
 
 <pre><code>dzen2 -fn 'xft\
           \:IPAGothic\

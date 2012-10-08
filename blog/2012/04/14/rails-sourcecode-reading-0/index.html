@@ -10,8 +10,10 @@
 
   
   <meta name="description" content="なんとなくで始めみてみたRailsソースコードリーディング。
-手探りながらの第0回でした。 今日のようすをひとことでいうと ぐだぐだ 今日のお題は Railsの概要と基本的な使い方 まずは、MVCに関するお話。
-MVCとは、アプリケーションの構成を M (=Model) &hellip;">
+手探りながらの第0回でした。 まぁ、ぐだぐだ、でした 今日のお題は Railsの概要と基本的な使い方 まずは、MVCに関するお話。
+MVCとは、アプリケーションの構成を M (=Model)
+データを管理するコンポーネント
+V(= &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +22,7 @@ MVCとは、アプリケーションの構成を M (=Model) &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ojima-h.github.com/blog/2012/04/14/rails-sourcecode-reading-0">
+  <link rel="canonical" href="http://ojima-h.github.com/blog/2012/04/14/rails-sourcecode-reading-0/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -95,7 +97,7 @@ MVCとは、アプリケーションの構成を M (=Model) &hellip;">
 <div class="entry-content"><p>なんとなくで始めみてみたRailsソースコードリーディング。
 手探りながらの第0回でした。</p>
 
-<p>今日のようすをひとことでいうと <strong>ぐだぐだ</strong></p>
+<p>まぁ、ぐだぐだ、でした</p>
 
 <p>今日のお題は</p>
 
@@ -118,7 +120,7 @@ ModelとViewのあいだをとりもつコンポーネント</li>
 
 <p>一方で、Railsの構成がどうなっているかというと、、、</p>
 
-<p>実はRails本体はからっぽで、実体は次のようなライブラリ群からできているのです。</p>
+<p>実はRails本体はからっぽで、実体は次のようなライブラリ群からできている。</p>
 
 <ul>
 <li><p>ActionPack</p>
@@ -137,7 +139,7 @@ ModelとViewのあいだをとりもつコンポーネント</li>
 </ul>
 
 
-<p>そして、M,V,C のそれぞれと、 Railsの各構成要素のそれぞれが一対一に対応しているのです。</p>
+<p>そして、M,V,C のそれぞれと、 Railsの各構成要素のそれぞれが一対一に対応している。</p>
 
 <ul>
 <li>Model &lt;=> ActiveRecord, ActiveModel, ActiveResource</li>

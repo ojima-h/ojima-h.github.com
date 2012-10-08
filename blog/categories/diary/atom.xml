@@ -4,7 +4,7 @@
   <title><![CDATA[Category: diary | My Octopress Blog]]></title>
   <link href="http://ojima-h.github.com/blog/categories/diary/atom.xml" rel="self"/>
   <link href="http://ojima-h.github.com/"/>
-  <updated>2012-07-15T05:06:20+09:00</updated>
+  <updated>2012-10-08T19:07:04+09:00</updated>
   <id>http://ojima-h.github.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -21,7 +21,7 @@
     <content type="html"><![CDATA[<p>なんとなくで始めみてみたRailsソースコードリーディング。
 手探りながらの第0回でした。</p>
 
-<p>今日のようすをひとことでいうと <strong>ぐだぐだ</strong></p>
+<p>まぁ、ぐだぐだ、でした</p>
 
 <p>今日のお題は</p>
 
@@ -44,7 +44,7 @@ ModelとViewのあいだをとりもつコンポーネント</li>
 
 <p>一方で、Railsの構成がどうなっているかというと、、、</p>
 
-<p>実はRails本体はからっぽで、実体は次のようなライブラリ群からできているのです。</p>
+<p>実はRails本体はからっぽで、実体は次のようなライブラリ群からできている。</p>
 
 <ul>
 <li><p>ActionPack</p>
@@ -63,7 +63,7 @@ ModelとViewのあいだをとりもつコンポーネント</li>
 </ul>
 
 
-<p>そして、M,V,C のそれぞれと、 Railsの各構成要素のそれぞれが一対一に対応しているのです。</p>
+<p>そして、M,V,C のそれぞれと、 Railsの各構成要素のそれぞれが一対一に対応している。</p>
 
 <ul>
 <li>Model &lt;=> ActiveRecord, ActiveModel, ActiveResource</li>

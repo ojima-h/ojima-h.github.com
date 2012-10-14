@@ -1,10 +1,9 @@
 ---
-layout: page
-title: "準備"
-date: 2012-10-14 20:23
+layout: post
+title: "rails sourcecode reading #3 -- 準備"
+date: 2012-10-14 23:20
 comments: true
-sharing: true
-footer: true
+categories: 
 ---
 
 まずは、ソースコードを用意しました。
@@ -35,8 +34,10 @@ bundle を利用することにしました。
 
 -   ctags
 
-    `$ ctags -e` でemacs用のタグファイルを生成し、
+    `ctags -e -R . --langmap=Ruby:.rb --ruby-types=cfFm` でemacs用のタグファイルを生成し、
     `M-.` でタグジャンプできます。
+
+    参考 : <http://wiki.livedoor.jp/koziy/d/ruby/ctags>
     
 -   rdefs (gem)
 
@@ -48,3 +49,10 @@ bundle を利用することにしました。
 -   ruby-debug
 
     <http://jampin.blog20.fc2.com/blog-entry-18.html> を参考に。
+
+-   yard
+
+    `yard server` でWebサーバ起動
+
+
+まずは、ActiveRecord と Arel あたりから読んでいこうと思います。

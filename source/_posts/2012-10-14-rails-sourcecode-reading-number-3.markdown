@@ -3,7 +3,7 @@ layout: post
 title: "rails sourcecode reading #3 -- 準備"
 date: 2012-10-14 23:20
 comments: true
-categories: 
+categories: rails-sourcecode-reading
 ---
 
 まずは、ソースコードを用意しました。

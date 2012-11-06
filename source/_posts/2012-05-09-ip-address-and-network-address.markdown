@@ -3,7 +3,7 @@ layout: post
 title: "ip address and network address"
 date: 2012-05-09 03:17
 comments: true
-categories: 
+categories: misc
 ---
 
 ネットワークについて勉強していたので、そのまとめ兼メモ。

@@ -3,7 +3,7 @@ layout: post
 title: "rails sourcecode reading #2"
 date: 2012-10-14 23:20
 comments: true
-categories: rails-sourcecode-reading
+categories: rails-sourcecode-reading inov2013
 ---
 
 ruby の勉強と Webアプリケーションフレームワークの勉強のために、

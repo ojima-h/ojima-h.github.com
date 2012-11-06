@@ -3,7 +3,7 @@ layout: post
 title: はじめましてのご挨拶
 date: 2012-04-14 23:31
 comments: true
-categories: diary
+categories: 
 ---
 
 ブログはじめました

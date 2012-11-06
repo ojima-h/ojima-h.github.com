@@ -3,7 +3,7 @@ layout: post
 title: "dzenで日本語"
 date: 2012-07-15 04:38
 comments: true
-categories: xmonad dzen japanese
+categories: xmonad
 ---
 
 dzen で日本語を表示するまでのまとめ。

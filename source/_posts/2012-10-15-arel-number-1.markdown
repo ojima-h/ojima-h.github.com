@@ -3,9 +3,13 @@ layout: post
 title: "arel #1"
 date: 2012-10-15 00:00
 comments: true
-categories: 
+categories: rails-sourcecode-reading inov2013
 ---
 
+Arelとは、SQLクエリを構築するためのrubyのライブラリです。
+
+ActiveRecord(モデル層)とデータベースの間に立ち、
+ActiveRecordにおけるメソッド呼び出しをSQLクエリに変換してくれます。  
 ref. <http://gihyo.jp/dev/serial/01/ruby/0043>
 
 arel-3.0.2、activerecord-3.2.8 を使ってます。
@@ -15,6 +19,8 @@ arel-3.0.2、activerecord-3.2.8 を使ってます。
     books = Arel::Table.new :books
     books = books.where(books[:title].eq('Head First Rails'))
     puts books.to_sql
+    
+このコードを実行すると、`SELECT FROM books WHERE books.title = 'Head First Rails'`という文字列が返ってきます。
 
 * * * * *
 
@@ -28,7 +34,7 @@ Arel を使うためには、データベースとのコネクションを作る
     ActiveRecord::Base.configurations = {'development' => {:adapter => 'sqlite3', :database => 'books.sqlite3'}}
     ActiveRecord::Base.establish_connection('development')
      
-    Arel::Table.engine = Arel::Sql::Engine.new(ActiveRecord::Base)
+    Arel::Table.engine = ActiveRecord::Base
 
 * * * * *
 

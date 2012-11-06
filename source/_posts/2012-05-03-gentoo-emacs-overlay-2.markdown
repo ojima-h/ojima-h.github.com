@@ -3,7 +3,7 @@ layout: post
 title: "emacs-overlay で Elisp を管理 -- その2 (プロキシ越しにsvnプロトコル)"
 date: 2012-05-03 02:55
 comments: true
-categories: [gentoo, portage, emacs, elisp]
+categories: [gentoo, emacs]
 ---
 
 大学のプロキシ内からだと svn プロトコルが通らず、emacs-overlay を layman に追加できなかった。

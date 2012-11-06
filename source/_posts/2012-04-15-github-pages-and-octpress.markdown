@@ -3,7 +3,7 @@ layout: post
 title: "Github pages + Octpress"
 date: 2012-04-15 13:44
 comments: true
-categories: 
+categories: octpress
 ---
 
 GitHub Pages + Octpressでブログ立ち上げるまでの記録。

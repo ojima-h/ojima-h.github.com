@@ -3,7 +3,7 @@ layout: post
 title: "showoff 使ってみた"
 date: 2012-04-22 14:00
 comments: true
-categories: [ruby,showoff,slide]
+categories: ruby
 ---
 
 <https://github.com/schacon/showoff>

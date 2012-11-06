@@ -3,7 +3,7 @@ layout: post
 title: "cucumber + rspec + webrat の落とし穴"
 date: 2012-04-16 21:17
 comments: true
-categories: [rails, cucumber, rspec, webrat]
+categories: rails
 ---
 
 cucumber + rspec + webrat ではまったのでメモ。

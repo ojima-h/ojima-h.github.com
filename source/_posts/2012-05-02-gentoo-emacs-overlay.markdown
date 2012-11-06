@@ -3,7 +3,7 @@ layout: post
 title: "emacs-overlay で Elisp をパッケージ管理"
 date: 2012-05-02 22:59
 comments: true
-categories: [gentoo, portage, emacs, elisp]
+categories: [gentoo, emacs]
 ---
 
 関西 Emacs で Elisp のパッケージ管理の話が出てきたことだし、

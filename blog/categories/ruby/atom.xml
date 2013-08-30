@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ruby | 毛無しさん@キレートレモン]]></title>
+  <link href="http://ojima-h.github.com/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="http://ojima-h.github.com/"/>
+  <updated>2013-08-30T16:24:01+09:00</updated>
+  <id>http://ojima-h.github.com/</id>
+  <author>
+    <name><![CDATA[ojima_h]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[showoff 使ってみた]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/04/22/showoff-intro/"/>
+    <updated>2012-04-22T14:00:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/04/22/showoff-intro</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/schacon/showoff">https://github.com/schacon/showoff</a></p>
+
+<p>Ruby + Markdown で HTML なスライドをつくれる、ということで、使ってみた。</p>
+
+<p>感想は</p>
+
+<ul>
+<li>Markdown やっぱり素敵</li>
+<li>Markdown から直にプレビューできる</li>
+<li>コマンド一発で github page に公開できるのが便利</li>
+<li>ある程度きれいにみせようと思ったら、CSS と javascript がんばって書
+かないといけない</li>
+<li>一枚のスライドのなかで内容を少しづつ見せる、ってことができなかった</li>
+</ul>
+
+
+<p>てかんじでした。</p>
+
+<hr />
+
+<p>使うまでの記録を書いておく。</p>
+
+<h2>とりあえず使う</h2>
+
+<p>まずはインストール。</p>
+
+<pre><code>gem install showoff
+</code></pre>
+
+<p>新規プレゼンテーションの作成</p>
+
+<pre><code>showoff create new_presentation
+cd new_presentation
+</code></pre>
+
+<p>すると、"one" というディレクトリの下に "01_slide.md" というファイルが
+できているはず。</p>
+
+<p>この "01_slide.md" にマークダウンで色々書いていけばよい。</p>
+
+<p><code>!SLIDE</code> という行があると、そこでスライドが切り替わる。</p>
+
+<p>コマンドラインから</p>
+
+<pre><code>$ showoff serve
+</code></pre>
+
+<p>を実行し、<code>localhost:9090</code> にアクセスすると、プレビューを見ることがで
+きる。</p>
+
+<p>ちなみに、Firefox + Vimperator を使っているとスライドの操作ができない
+ので注意。<code>Shift + escape</code> で Vimperator のキーを無効にすれば大丈夫。</p>
+
+<p>さらに、</p>
+
+<pre><code>$ showoff static
+</code></pre>
+
+<p>で、"static" というディレクトリができて、その中に整形された HTML が吐かれる。</p>
+
+<p>詳しい使いかたは <a href="https://github.com/schacon/showoff">https://github.com/schacon/showoff</a> を参照。</p>
+
+<h2>github pages への公開方法</h2>
+
+<p>まずは、ソース全体を公開するためのレポジトリを作成。
+全部のファイルをコミットする。</p>
+
+<p>そしたら、おもむろに</p>
+
+<pre><code>$ showoff github
+</code></pre>
+
+<p>これで、"gh_pages" というブランチに、<code>showoff static</code> されたコードをコ
+ミットしてくれる。</p>
+
+<p>あとは、<code>git push orgin gh-pages</code> するだけで、
+"username.github.com/repository-name/" にスライドが公開される。</p>
+
+<hr />
+
+<p>うーん、やっぱりちょっとづつ表示していくのが欲しいな....
+javascript でできるのかな...</p>
+]]></content>
+  </entry>
+  
+</feed>

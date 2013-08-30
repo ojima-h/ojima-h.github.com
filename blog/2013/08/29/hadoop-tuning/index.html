@@ -1,0 +1,391 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Hadoop チューニング - 毛無しさん@キレートレモン</title>
+  <meta name="author" content="ojima_h">
+
+  
+  <meta name="description" content="Hadoop のチューニングに関してまとめ 効率の良い HiveQL を書くときに気をつけるべきことをまとめてみる。 以下に書いたことは、ほとんど全部自分なりの解釈なので、間違いが多々あると思います Hadoop一般のチューニングに関しては、ここを参考にした。 http://www. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ojima-h.github.com/blog/2013/08/29/hadoop-tuning/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="毛無しさん@キレートレモン" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35619154-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">毛無しさん@キレートレモン</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ojima-h.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Hadoop チューニング</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-29T16:06:00+09:00" pubdate data-updated="true">Aug 29<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h1>Hadoop のチューニングに関してまとめ</h1>
+
+<p>効率の良い HiveQL を書くときに気をつけるべきことをまとめてみる。</p>
+
+<p><em>以下に書いたことは、ほとんど全部自分なりの解釈なので、間違いが多々あると思います</em></p>
+
+<p>Hadoop一般のチューニングに関しては、ここを参考にした。</p>
+
+<p><a href="http://www.cloudera.co.jp/jpevents/cloudera-world-tokyo/pdf/A3_Hadoop%E3%81%AE%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E8%A8%AD%E8%A8%88_%E9%81%8B%E7%94%A8%E3%81%AE%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88.pdf">http://www.cloudera.co.jp/jpevents/cloudera-world-tokyo/pdf/A3_Hadoop%E3%81%AE%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E8%A8%AD%E8%A8%88_%E9%81%8B%E7%94%A8%E3%81%AE%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88.pdf</a></p>
+
+<p><a href="http://www.amazon.co.jp/Hadoop-Tom-White/dp/487311439X">Hadoop本</a> を参考に、この資料の補足してみた↓</p>
+
+<h2>ラック内ネットワークとラック間ネットワークは何が違うのか？</h2>
+
+<p><em>(p.69 「ネットワークトポロジとHadoop」 / p.267 9.1.1 ネットワークトポロジ)</em></p>
+
+<p>Hadoop は、データを読み書きする際にネットワークのトポロジやネットワーク構成を勘案しながら動作する。
+読み込みを行う際には、クライアントになるべく <em>近い</em> ノードから読み込むように調整するし、
+書き込みを行う際には、データのレプリカが近い場所に集中してしまわないように調整する。</p>
+
+<p>2つのノード間のデータ転送速度が早いほど、この2つのノードが <em>近い</em> と見做される。
+Hadoop は、ノード間の距離をネットワーク構成から算出している。
+つまり、「同じラックにある2つのノードは互いに近い = 転送速度が早い」ものとして処理を進める。</p>
+
+<p>そのため、同じラック内にあるのに実際には転送速度が遅い、ということになると、
+Hadoop が効率良くデータを処理することができなくなってしまう。</p>
+
+<h2>スレーブノードでは、なぜ RAID0 を組んではダメなのか？</h2>
+
+<p><em>(p.266 「RAIDを使わないのはなぜ？」)</em></p>
+
+<ul>
+<li>HDFSはノード間の複製によって冗長性を持つので、RAIDで冗長性を提供してもらう必要がない。(←弱い)</li>
+<li>RAID0 でデータロストが発生した事例あり</li>
+</ul>
+
+
+<h2>マスターノードでRaidを組まないと何が起きるのか？</h2>
+
+<p>マスターノード (= ネームノード) は、クラスタ上のどのノードにどのファイルのデータが保存されているかを管理している。
+マスターノードのデータが壊れると、HDFSからファイルデータを読み取ることができなくなってしまう。</p>
+
+<p>そのため、マスターノードは信頼性を確保しておく必要がある。</p>
+
+<h2>マスターとスレーブで、求められるCPU性能が違うのはなぜ？</h2>
+
+<p>実際に計算するのはスレーブノード。
+マスターノードは、クライアントの要求を受けて適切なスレーブノードに指令を出すのが仕事。
+だから、マスターノードはたいしてCPU性能を必要としない。</p>
+
+<h2>ECCとはなんぞ？</h2>
+
+<p><a href="http://e-words.jp/w/ECCE383A1E383A2E383AA.html">Error Check and Correct memory</a></p>
+
+<blockquote><p>メモリに誤った値が記録されていることを検出し、正しい値に訂正することができるメモリモジュール。</p></blockquote>
+
+<h2>なんで圧縮したら「速度」があがるの？</h2>
+
+<p>マップタスクからの出力は一時的にディスクに保存される。
+レデュースタスクからの出力もディスクに保存される。</p>
+
+<p>一般的には、Hadoopはかなり大きなデータを扱うので、出力結果を圧縮しないままディスクに書き込む時間よりも、
+(圧縮する時間 + 圧縮データをディスクに書き込む時間) の方が短くなる。
+読み込む時も同様に、非圧縮のデータを読み出す時間よりも、(圧縮されたデータを読み出す時間 + 解凍する時間) の方が短かくなる。</p>
+
+<h2>ブロック数(サイズ)とヒープサイズの関係は？ (16枚目)</h2>
+
+<p>ブロック数が小さい = ブロックサイズが大きい = ディスクから1回に読み込むデータのサイズが大きい = ディスクへのアクセスが減る</p>
+
+<p>ヒープサイズが大きい = 計算結果を沢山メモリに置いておける = 計算結果をディスクに書き出すことが減る = ディスクへのアクセスが減る</p>
+
+<p>⇒ <strong>速い</strong></p>
+
+<h2>フェデレーション？て何？</h2>
+
+<p><a href="http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/Federation.html">http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/Federation.html</a></p>
+
+<blockquote><p>The prior HDFS architecture allows only a single namespace for the entire cluster. A single Namenode manages this namespace. HDFS Federation addresses limitation of the prior architecture by adding support multiple Namenodes/namespaces to HDFS file system.</p>
+
+<p>In order to scale the name service horizontally, federation uses multiple independent Namenodes/namespaces. The Namenodes are federated, that is, the Namenodes are independent and don’t require coordination with each other. The datanodes are used as common storage for blocks by all the Namenodes. Each datanode registers with all the Namenodes in the cluster. Datanodes send periodic heartbeats and block reports and handles commands from the Namenodes.</p></blockquote>
+
+<p>ネームノードの性能をスケールさせるために、HDFSファイル空間を2つに分けてしまって2つのネームノードでそれぞれ担当しよう、という話のようだ。</p>
+
+<p>ネームノードの冗長化とはまた別の話なのかな？</p>
+
+<h2>「ディスクのマウントポイントごとに別々のディレクトリをカンマ区切りで指定すること」てどういう意味？(21枚目)</h2>
+
+<p>1つのデータノードのストレージはいくつかのディスクで構成されている。
+ディスクが複数あってそれぞれにデータが分散して保存されているから、
+データノードは処理を並列して行うことができる。</p>
+
+<p>で、データノードは <code>dfs.datanode.data.dir</code> に指定されたディレクトリに対してラウンドロビンで書き込んでいくから、
+<code>dfs.datanode.data.dir</code> には、複数あるディスクのそれぞれのマウントポイントを指定しないとダメだよ、ということ。</p>
+
+<p>ちなみに、JBOD っていうのは、<a href="http://ja.wikipedia.org/wiki/JBOD">http://ja.wikipedia.org/wiki/JBOD</a> 参照。</p>
+
+<h2>「タクク数 > ディスク数」てどういう状態？(25枚目)</h2>
+
+<p>それぞれのタスクは、(普通は)ディスクからデータを読みとってから計算をはじめる。
+「タクク数 > ディスク数」になってしまうと、並行してディスクアクセスを行なえるスレッド数(プロセス数？)の限界を越えて、
+タスクノードがディスクアクセスを要求してくることになる。</p>
+
+<p>で、ディスクアクセスが詰まってしまう。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">ojima_h</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-29T16:06:00+09:00" pubdate data-updated="true">Aug 29<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/hadoop/'>Hadoop</a>, <a class='category' href='/blog/categories/hive/'>Hive</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ojima-h.github.com/blog/2013/08/29/hadoop-tuning/" data-via="ojima_h" data-counturl="http://ojima-h.github.com/blog/2013/08/29/hadoop-tuning/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/10/26/activerecord-number-1/" title="Previous Post: ActiveRecord #1">&laquo; ActiveRecord #1</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/08/30/hive-optimization/" title="Next Post: Hive 最適化">Hive 最適化 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/08/30/hive-optimization/">Hive 最適化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/29/hadoop-tuning/">Hadoop チューニング</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/26/activerecord-number-1/">ActiveRecord #1</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/19/linux-from-scratch-number-0/">Linux from Scratch 始めます</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/16/arel-number-2/">arel #2</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/emacs'>emacs (2)</a></li><li><a href='/blog/categories/gentoo'>gentoo (2)</a></li><li><a href='/blog/categories/hadoop'>Hadoop (1)</a></li><li><a href='/blog/categories/hive'>Hive (1)</a></li><li><a href='/blog/categories/inov2013'>inov2013 (6)</a></li><li><a href='/blog/categories/linux-from-scratch'>linux-from-scratch (1)</a></li><li><a href='/blog/categories/misc'>misc (2)</a></li><li><a href='/blog/categories/octpress'>octpress (1)</a></li><li><a href='/blog/categories/rails'>rails (1)</a></li><li><a href='/blog/categories/rails-sourcecode-reading'>rails-sourcecode-reading (7)</a></li><li><a href='/blog/categories/ruby'>ruby (1)</a></li><li><a href='/blog/categories/xmonad'>xmonad (1)</a></li></ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/ojima-h">@ojima-h</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'ojima-h',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ojima_h", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ojima_h" class="twitter-follow-button" data-show-count="false">Follow @ojima_h</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - ojima_h -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

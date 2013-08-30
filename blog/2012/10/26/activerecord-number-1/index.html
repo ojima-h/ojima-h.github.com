@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ActiveRecord #1 - 毛無しさん@キレートレモン</title>
+  <meta name="author" content="ojima_h">
+
+  
+  <meta name="description" content="前回 Arel が SQL を構築するところを読んだので、次は ActiveRecord がデータベースを操作するときに、どのタイミングで SQL を構築しているのかを見たいと思います。 このサンプルで、User.where(...)の時点でSQLが発行されてしまうと、その後に続く.limit( &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ojima-h.github.com/blog/2012/10/26/activerecord-number-1/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="毛無しさん@キレートレモン" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35619154-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">毛無しさん@キレートレモン</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ojima-h.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ActiveRecord #1</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-26T08:40:00+09:00" pubdate data-updated="true">Oct 26<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>前回 Arel が SQL を構築するところを読んだので、次は ActiveRecord がデータベースを操作するときに、どのタイミングで SQL を構築しているのかを見たいと思います。</p>
+
+<p>このサンプルで、<code>User.where(...)</code>の時点でSQLが発行されてしまうと、その後に続く<code>.limit(10)</code>が反映されないはずじゃないか、というのか今回の疑問です。</p>
+
+<hr />
+
+<p>まず、<code>#where</code>の場所を探します。</p>
+
+<p><code>ActiveRecord</code>はざっくりこんなかんじになっています↓</p>
+
+<h2>Module#delegate</h2>
+
+<p>ref. <a href="http://api.rubyonrails.org/classes/Module.html#method-i-delegate">http://api.rubyonrails.org/classes/Module.html#method-i-delegate</a></p>
+
+<p><code>delegate</code> は、<code>active_support</code>の中で<code>Module#delegate</code>として定義されています。</p>
+
+<p>上の例では、<code>Hoge#method</code>の呼び出すと、<code>Hoge#target</code>が返すオブジェクトの<code>method</code>メソッドが呼ばれます。</p>
+
+<h2><code>Concern#included</code></h2>
+
+<p><code>included</code>メソッドも同じく<code>active_support</code>で定義されており、
+そのモジュールがincludeされた時に、ブロックの中身が実行されます。</p>
+
+<hr />
+
+<p>というわけで、<code>Relation#where</code>が呼び出されることが分かります。</p>
+
+<h2><code>Relation#where</code></h2>
+
+<p><code>build_where</code>の中身を追っていくと、
+<code>PredicateBuilder#build_from_hash</code>内の以下のコードが実行されることが分かります。</p>
+
+<p>上のコード内の<code>default_table</code>には
+<code>Arel::Table</code>のインスタンスが入っています。</p>
+
+<p>とういわけで、<code>User.where(:name =&gt; "John")</code>を実行したとき、
+<code>Relation#build_where</code>の結果は<code>[table[:name].eq("John")]</code>となります。
+これが<code>Relation#where_values</code>に格納されます。</p>
+
+<p>以上で、<code>ActiveRecord::Base#where</code>の呼び出しは終わりです。</p>
+
+<p>まとめると、<code>ActiveRecord::Base#where</code>を呼び出すと、<code>Relation</code>クラスのインスタンスが返されます。
+その中には<code>table[column].eq(value)</code>たちが入った配列が格納されています。</p>
+
+<h2><code>Relation#limit</code></h2>
+
+<p><code>Relation#limit</code>も同じかんじです。</p>
+
+<h2>で、いつSQL？</h2>
+
+<p>さて、<code>User.where(..).limit(10)</code>の結果、<code>Relation</code>クラスのインスタンスが返ってくることは分かりましたが、
+これがいつSQLに変換され、データベースに向けて投げられるんでしょうか？</p>
+
+<p><code>where</code>の検索結果が必要になるのはどんな時でしょうか？</p>
+
+<p>大抵の場合、検索結果から個々の<code>User</code>クラスのインスタンスを取り出すときかと思います。
+このとき、検索結果に対しては Array としてアクセスすると思います。</p>
+
+<p>というわけで、<code>Relation#to_a</code>について見てみました。</p>
+
+<p><code>scope</code>とか<code>eager_loading</code>とかよく分からないことは置いておいて、デバッガで追いかけると、
+<code>@klass.find_by_sql(arel, @bind_values)</code>が実行されることが分かります。</p>
+
+<p>ということは、<code>arel</code>の値が問題になりそうです。</p>
+
+<p>こんなかんじになってました。
+この<code>build_arel</code>で、<code>where</code>とか<code>limit</code>に渡された引数たちを、
+まとめて<code>Arel</code>のオブジェクトに変換していってます。</p>
+
+<p><code>arel.xxx</code>が連なってる感じ、壮観です。</p>
+
+<h2><code>find_by_sql</code></h2>
+
+<p>この時点では<code>arel</code>はSQLになっていません。</p>
+
+<p>なので、<code>find_by_sql</code>の中を追っていくことにします。</p>
+
+<p>追っていくと、
+<code>ActiveRecord::ConnectionAdapters::DatabaseStatements#select_all</code>
+に行き着きます。</p>
+
+<p><code>DatabaseManager#to_sql</code>の中の
+<code>visitor.accept(arel.ast) do ...</code> というのが、
+<code>Arel::TreeManger#to_sql</code>と同じことをやっているのが分かります。</p>
+
+<p>というわけで、ここに来て、Arelのオブジェクトが無事SQLに変換されて、
+DBMに向けて投げられたことが分かりました。</p>
+
+<p>めでたし。</p>
+
+<h2><code>to_a</code>は誰が呼ぶ？</h2>
+
+<p><code>to_a</code>を呼び出せば、SQLが発行されることは分かりましたが、
+誰がどのタイミングで<code>to_a</code>を呼ぶのでしょうか？</p>
+
+<p>そういえば、<code>where</code>の検索結果に対しては、<code>each</code>メソッドを呼べます。</p>
+
+<p><code>each</code>がどこで定義されているのか調べてみました。</p>
+
+<p>なるほど。
+<code>each</code>とか<code>map</code>などが呼ばれたタイミングで、<code>to_a</code>にデリゲートされると。</p>
+
+<h2><code>Relation#inspect</code></h2>
+
+<p>では、たとえば、irbの中で、<code>&gt; p User.where(...)</code>などとしたときはどうなんでしょうか？</p>
+
+<p>このときも<code>to_a</code>が呼ばれるのでしょうか？</p>
+
+<p><a href="http://doc.ruby-lang.org/ja/1.9.2/class/Object.html">http://doc.ruby-lang.org/ja/1.9.2/class/Object.html</a>によると↓とのこ
+とです。</p>
+
+<blockquote><p>  inspect -> String</p>
+
+<pre><code>  オブジェクトを人間が読める形式に変換した文字列を返します。
+
+  組み込み関数 Kernel.#p は、このメソッドの結果を使用して オブジェクトを表示します。
+</code></pre></blockquote>
+
+<p><code>p</code>は<code>inspect</code>の結果を表示するようです。</p>
+
+<p><code>Relation#insepct</code>は</p>
+
+<p>となってます。</p>
+
+<p>やっぱり、<code>to_a</code>が呼ばれるようです。</p>
+
+<h2>まとめ</h2>
+
+<p>Arelのときもそうでしたが、
+<code>where</code>などのメソッドが呼ばれた時点では単に引数だけを保存しておいて、
+必要になった時点でSQLを発行するということでした。</p>
+
+<p>「必要になった時点」の判断の仕方が面白いと思いました。</p>
+
+<p>必要になった時点で<code>to_a</code>を呼ぶわけですが、<code>each</code>から<code>to_a</code>にdelegateされるとか、
+<code>inspect</code>の中で<code>to_a</code>を呼ぶとか。</p>
+
+<p>しかし、<code>where</code>とかをわざわざActiveRecordでラップする必要があるんですかね&#8230;
+<code>Relation</code>のなかでArelのオブジェクトを保持しておいて、<code>where</code>の処理はArelにまかせて、
+<code>Relation</code>は<code>to_a</code>とかのまわりだけ面倒みたらだめなのかな&#8230;？</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">ojima_h</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-26T08:40:00+09:00" pubdate data-updated="true">Oct 26<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/inov2013/'>inov2013</a>, <a class='category' href='/blog/categories/rails-sourcecode-reading/'>rails-sourcecode-reading</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ojima-h.github.com/blog/2012/10/26/activerecord-number-1/" data-via="ojima_h" data-counturl="http://ojima-h.github.com/blog/2012/10/26/activerecord-number-1/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/10/19/linux-from-scratch-number-0/" title="Previous Post: Linux from Scratch 始めます">&laquo; Linux from Scratch 始めます</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/08/29/hadoop-tuning/" title="Next Post: Hadoop チューニング">Hadoop チューニング &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/08/30/hive-optimization/">Hive 最適化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/29/hadoop-tuning/">Hadoop チューニング</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/26/activerecord-number-1/">ActiveRecord #1</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/19/linux-from-scratch-number-0/">Linux from Scratch 始めます</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/16/arel-number-2/">arel #2</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/emacs'>emacs (2)</a></li><li><a href='/blog/categories/gentoo'>gentoo (2)</a></li><li><a href='/blog/categories/hadoop'>Hadoop (1)</a></li><li><a href='/blog/categories/hive'>Hive (1)</a></li><li><a href='/blog/categories/inov2013'>inov2013 (6)</a></li><li><a href='/blog/categories/linux-from-scratch'>linux-from-scratch (1)</a></li><li><a href='/blog/categories/misc'>misc (2)</a></li><li><a href='/blog/categories/octpress'>octpress (1)</a></li><li><a href='/blog/categories/rails'>rails (1)</a></li><li><a href='/blog/categories/rails-sourcecode-reading'>rails-sourcecode-reading (7)</a></li><li><a href='/blog/categories/ruby'>ruby (1)</a></li><li><a href='/blog/categories/xmonad'>xmonad (1)</a></li></ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/ojima-h">@ojima-h</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'ojima-h',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ojima_h", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ojima_h" class="twitter-follow-button" data-show-count="false">Follow @ojima_h</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - ojima_h -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

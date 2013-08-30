@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: inov2013 | 毛無しさん@キレートレモン]]></title>
+  <link href="http://ojima-h.github.com/blog/categories/inov2013/atom.xml" rel="self"/>
+  <link href="http://ojima-h.github.com/"/>
+  <updated>2013-08-30T16:24:01+09:00</updated>
+  <id>http://ojima-h.github.com/</id>
+  <author>
+    <name><![CDATA[ojima_h]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ActiveRecord #1]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/10/26/activerecord-number-1/"/>
+    <updated>2012-10-26T08:40:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/10/26/activerecord-number-1</id>
+    <content type="html"><![CDATA[<p>前回 Arel が SQL を構築するところを読んだので、次は ActiveRecord がデータベースを操作するときに、どのタイミングで SQL を構築しているのかを見たいと思います。</p>
+
+<p></p>
+
+<p>このサンプルで、<code>User.where(...)</code>の時点でSQLが発行されてしまうと、その後に続く<code>.limit(10)</code>が反映されないはずじゃないか、というのか今回の疑問です。</p>
+
+<hr />
+
+<p>まず、<code>#where</code>の場所を探します。</p>
+
+<p><code>ActiveRecord</code>はざっくりこんなかんじになっています↓</p>
+
+<p></p>
+
+<h2>Module#delegate</h2>
+
+<p>ref. <a href="http://api.rubyonrails.org/classes/Module.html#method-i-delegate">http://api.rubyonrails.org/classes/Module.html#method-i-delegate</a></p>
+
+<p><code>delegate</code> は、<code>active_support</code>の中で<code>Module#delegate</code>として定義されています。</p>
+
+<p></p>
+
+<p>上の例では、<code>Hoge#method</code>の呼び出すと、<code>Hoge#target</code>が返すオブジェクトの<code>method</code>メソッドが呼ばれます。</p>
+
+<h2><code>Concern#included</code></h2>
+
+<p><code>included</code>メソッドも同じく<code>active_support</code>で定義されており、
+そのモジュールがincludeされた時に、ブロックの中身が実行されます。</p>
+
+<hr />
+
+<p>というわけで、<code>Relation#where</code>が呼び出されることが分かります。</p>
+
+<h2><code>Relation#where</code></h2>
+
+<p><code>build_where</code>の中身を追っていくと、
+<code>PredicateBuilder#build_from_hash</code>内の以下のコードが実行されることが分かります。</p>
+
+<p></p>
+
+<p>上のコード内の<code>default_table</code>には
+<code>Arel::Table</code>のインスタンスが入っています。</p>
+
+<p>とういわけで、<code>User.where(:name =&gt; "John")</code>を実行したとき、
+<code>Relation#build_where</code>の結果は<code>[table[:name].eq("John")]</code>となります。
+これが<code>Relation#where_values</code>に格納されます。</p>
+
+<p>以上で、<code>ActiveRecord::Base#where</code>の呼び出しは終わりです。</p>
+
+<p>まとめると、<code>ActiveRecord::Base#where</code>を呼び出すと、<code>Relation</code>クラスのインスタンスが返されます。
+その中には<code>table[column].eq(value)</code>たちが入った配列が格納されています。</p>
+
+<h2><code>Relation#limit</code></h2>
+
+<p><code>Relation#limit</code>も同じかんじです。</p>
+
+<p></p>
+
+<h2>で、いつSQL？</h2>
+
+<p>さて、<code>User.where(..).limit(10)</code>の結果、<code>Relation</code>クラスのインスタンスが返ってくることは分かりましたが、
+これがいつSQLに変換され、データベースに向けて投げられるんでしょうか？</p>
+
+<p><code>where</code>の検索結果が必要になるのはどんな時でしょうか？</p>
+
+<p>大抵の場合、検索結果から個々の<code>User</code>クラスのインスタンスを取り出すときかと思います。
+このとき、検索結果に対しては Array としてアクセスすると思います。</p>
+
+<p>というわけで、<code>Relation#to_a</code>について見てみました。</p>
+
+<p></p>
+
+<p><code>scope</code>とか<code>eager_loading</code>とかよく分からないことは置いておいて、デバッガで追いかけると、
+<code>@klass.find_by_sql(arel, @bind_values)</code>が実行されることが分かります。</p>
+
+<p>ということは、<code>arel</code>の値が問題になりそうです。</p>
+
+<p></p>
+
+<p>こんなかんじになってました。
+この<code>build_arel</code>で、<code>where</code>とか<code>limit</code>に渡された引数たちを、
+まとめて<code>Arel</code>のオブジェクトに変換していってます。</p>
+
+<p><code>arel.xxx</code>が連なってる感じ、壮観です。</p>
+
+<h2><code>find_by_sql</code></h2>
+
+<p>この時点では<code>arel</code>はSQLになっていません。</p>
+
+<p>なので、<code>find_by_sql</code>の中を追っていくことにします。</p>
+
+<p>追っていくと、
+<code>ActiveRecord::ConnectionAdapters::DatabaseStatements#select_all</code>
+に行き着きます。</p>
+
+<p></p>
+
+<p><code>DatabaseManager#to_sql</code>の中の
+<code>visitor.accept(arel.ast) do ...</code> というのが、
+<code>Arel::TreeManger#to_sql</code>と同じことをやっているのが分かります。</p>
+
+<p></p>
+
+<p>というわけで、ここに来て、Arelのオブジェクトが無事SQLに変換されて、
+DBMに向けて投げられたことが分かりました。</p>
+
+<p>めでたし。</p>
+
+<h2><code>to_a</code>は誰が呼ぶ？</h2>
+
+<p><code>to_a</code>を呼び出せば、SQLが発行されることは分かりましたが、
+誰がどのタイミングで<code>to_a</code>を呼ぶのでしょうか？</p>
+
+<p>そういえば、<code>where</code>の検索結果に対しては、<code>each</code>メソッドを呼べます。</p>
+
+<p></p>
+
+<p><code>each</code>がどこで定義されているのか調べてみました。</p>
+
+<p></p>
+
+<p>なるほど。
+<code>each</code>とか<code>map</code>などが呼ばれたタイミングで、<code>to_a</code>にデリゲートされると。</p>
+
+<h2><code>Relation#inspect</code></h2>
+
+<p>では、たとえば、irbの中で、<code>&gt; p User.where(...)</code>などとしたときはどうなんでしょうか？</p>
+
+<p>このときも<code>to_a</code>が呼ばれるのでしょうか？</p>
+
+<p><a href="http://doc.ruby-lang.org/ja/1.9.2/class/Object.html">http://doc.ruby-lang.org/ja/1.9.2/class/Object.html</a>によると↓とのこ
+とです。</p>
+
+<blockquote><p>  inspect -> String</p>
+
+<pre><code>  オブジェクトを人間が読める形式に変換した文字列を返します。
+
+  組み込み関数 Kernel.#p は、このメソッドの結果を使用して オブジェクトを表示します。
+</code></pre></blockquote>
+
+<p><code>p</code>は<code>inspect</code>の結果を表示するようです。</p>
+
+<p><code>Relation#insepct</code>は</p>
+
+<p></p>
+
+<p>となってます。</p>
+
+<p>やっぱり、<code>to_a</code>が呼ばれるようです。</p>
+
+<h2>まとめ</h2>
+
+<p>Arelのときもそうでしたが、
+<code>where</code>などのメソッドが呼ばれた時点では単に引数だけを保存しておいて、
+必要になった時点でSQLを発行するということでした。</p>
+
+<p>「必要になった時点」の判断の仕方が面白いと思いました。</p>
+
+<p>必要になった時点で<code>to_a</code>を呼ぶわけですが、<code>each</code>から<code>to_a</code>にdelegateされるとか、
+<code>inspect</code>の中で<code>to_a</code>を呼ぶとか。</p>
+
+<p>しかし、<code>where</code>とかをわざわざActiveRecordでラップする必要があるんですかね...
+<code>Relation</code>のなかでArelのオブジェクトを保持しておいて、<code>where</code>の処理はArelにまかせて、
+<code>Relation</code>は<code>to_a</code>とかのまわりだけ面倒みたらだめなのかな...？</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Linux from Scratch 始めます]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/10/19/linux-from-scratch-number-0/"/>
+    <updated>2012-10-19T18:08:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/10/19/linux-from-scratch-number-0</id>
+    <content type="html"><![CDATA[<p>前々からやる、やる、と言っていた Linux from Scratch に手をつけようと思います。</p>
+
+<p>Linux from scratch (LFS) ていうのは、</p>
+
+<blockquote><p>  Linux From Scratch(リナックス フロム スクラッチ、LFS)とは、Linuxを1から構築しようという試みである。すなわち、カーネルなども含めてすべて手作業でソースコードからコンパイルして作り上げる。</p>
+
+<p>  具体的には、まず現在動作しているLinuxシステム上で、LFSをコンパイルするためのシステムを構築する。そのシステム上で、実際に稼働するLFSのシステムをコンパイルし、実際に起動することが出来る状態にまでもって行くという手順を踏む。</p>
+
+<p>  ref. http://ja.wikipedia.org/wiki/Linux_from_Scratch</p></blockquote>
+
+<p>ということです。でもって、</p>
+
+<blockquote><p>  LFS teaches people how a Linux system works internally
+  Building LFS teaches you about all that makes Linux tick, how things work together and depend on each other. And most importantly, how to customize it to your own tastes and needs.</p>
+
+<p>  ref. http://www.linuxfromscratch.org/lfs/</p></blockquote>
+
+<p>楽しく勉強できる、ということのようです。</p>
+
+<p>本家 : <a href="http://www.linuxfromscratch.org">http://www.linuxfromscratch.org</a></p>
+
+<h2>準備</h2>
+
+<p><a href="http://www.linuxfromscratch.org/lfs/downloads/stable/">http://www.linuxfromscratch.org/lfs/downloads/stable/</a> から、LFS-BOOK-7.2.pdf もしくは、LFS-BOOK-7.2.tar.bz (HTMLが入ってる)をダウンロードします。このBOOKに従って粛々とビルドしていきます。</p>
+
+<p>次に、適当なマシンにLinuxをインストールします。LFSやるなら、32bitマシンが無難ぽいです。</p>
+
+<p>というわけで、Core 2 Quad のマシンにGentooをインストールしました。安心の最小構成です。
+手元のノートからSSHでアクセスすることにします。</p>
+
+<p>Gentooがインストールされたシステムを「ホスト」と呼びます。
+ホスト側で最小限のシステムをビルドした後、新しく構築した側のシステムに移りビスドを進めていくという
+流れです。</p>
+
+<h2>パーティション作成</h2>
+
+<p>LFSをビルドするために、新しいのパーティションを作ります。今回は10GBとしました。
+スワップ領域、ブートパーティションはホストと共有することにました。</p>
+
+<p></p>
+
+<p>新しくつくったパーティションを<code>/mnt/lfs</code>以下にマウントし、そこにソースをダウンロードしてきます。</p>
+
+<p>ダウンロードするべきソースのリストは、<a href="http://www.linuxfromscratch.org/lfs/downloads/stable/LFS-BOOK-7.2.tar.bz2">http://www.linuxfromscratch.org/lfs/downloads/stable/LFS-BOOK-7.2.tar.bz2</a> に含まれる wget-list にあります。md5sum も含まれています。</p>
+
+<p></p>
+
+<p>あとはユーザを作って、環境変数を調整したり... 詳しくはLFS-BOOK参照。</p>
+
+<p>これで、ソースが手に入ったので、あとはひたすらビルドしてくだけなんですかね...？そうだといいですね。</p>
+
+<p>とりあえず、今日はここまで。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[arel #2]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/10/16/arel-number-2/"/>
+    <updated>2012-10-16T03:30:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/10/16/arel-number-2</id>
+    <content type="html"><![CDATA[<p>arel-3.0.2 での以下のコードの実行過程を追い掛けています。</p>
+
+<p></p>
+
+<h2><code>Table#[]</code></h2>
+
+<p>次に、<code>books[:title]</code> の部分について見ます。</p>
+
+<p><code>Table::[]</code>は、<code>Arel::Attribute.new</code>を呼びだしています。</p>
+
+<h3><code>Attribute</code> と <code>Struct</code> について</h3>
+
+<p><code>Struct</code>とは、、、</p>
+
+<blockquote><p>  構造体クラス。Struct.new はこのクラスのサブクラスを新たに生成します。
+  個々の構造体はサブクラスから Struct.new を使って生成します。</p>
+
+<p>  ref. <a href="http://doc.ruby-lang.org/ja/1.9.3/class/Struct.html">http://doc.ruby-lang.org/ja/1.9.3/class/Struct.html</a></p></blockquote>
+
+<p>クラスを作るコンストラクタって何だよ...</p>
+
+<p>arel/attributes/attribute.rb では以下のように使われています。</p>
+
+<p></p>
+
+<p><code>Arel::Predications</code> では例えば次のようなメソッドを定義しています。</p>
+
+<ul>
+<li>Arel::Predications#not_eq</li>
+<li>Arel::Predications#not_eq_any</li>
+<li>Arel::Predications#not_eq_all</li>
+<li>Arel::Predications#eq</li>
+<li>Arel::Predications#eq_any</li>
+</ul>
+
+
+<p>つまり、<code>Attribute</code> という構造体(のサブクラス)に対して、比較や算術演算などができるようになっている、ということです。</p>
+
+<p><code>Table#[]</code> はこの拡張された構造体を返していることが分かります。</p>
+
+<p></p>
+
+<p>つまり、<code>books[:title].relation</code>には<code>self</code>が、<code>books[:title].name</code>には<code>:title</code>が格納されます。
+さらに、<code>books[:title]</code>は<code>Predications</code>モジュールから取り込まれた<code>eq</code>というメソッドをもっています。</p>
+
+<p>ちなみに、<code>::Arel::Attribute.new</code>としていますが、<code>Arel::Attribute</code>は<code>Arel</code>モジュールの定数で、
+実体は<code>Arel::Attributes::Attribute</code>クラスです。</p>
+
+<h2><code>Predications#eq</code></h2>
+
+<p><code>Predications#eq</code>は↓</p>
+
+<p></p>
+
+<p><code>Nodes::Equality</code>クラスは、<code>Binary</code>を継承しています。</p>
+
+<p><code>Binary</code>のコンストラクタは、単に引数を記憶しておくだけです。</p>
+
+<p></p>
+
+<p>この時点では、具体的な処理はまだ何もしていません。</p>
+
+<p><code>eq</code>メソッドは<code>Arel::Nodes::Equalitiy</code>クラスのインスタンスを返します。</p>
+
+<h3><code>Class.new</code> と <code>const_set</code></h3>
+
+<p>話は逸れますが、binary.rbに以下のような記述がありました。</p>
+
+<p></p>
+
+<p><code>Module#const_set</code>は、モジュールに定数を定義するメソッドです。</p>
+
+<p><code>Class.new(supercass = Object)</code>は、<code>superclass</code>を親クラスとして匿名クラスをつくります。</p>
+
+<p>Nodeモジュールに、Binaryクラスのサブクラスを値として、各種バイナリオペレータに対応する定数を定義しています。</p>
+
+<p>ぱっとみエグいです。</p>
+
+<h2><code>Table#where</code></h2>
+
+<p><code>books.where</code> を呼びだすと、新たに <code>SelectManager</code>クラスのインスタンスが生成され、
+そのインスタンスが保持する<code>wheres</code>というリストに、引数が追加されます。</p>
+
+<p><code>Expressions#eq</code>と同様、引数を記憶しておくだけです。</p>
+
+<h2><code>SelectManager#to_sql</code></h2>
+
+<p>さて、具体的にSQLに変換している部分を見ていくことにします。</p>
+
+<p><code>Table#where</code> を実行すると、<code>SelectManager</code>クラスのインスタンスを返します。</p>
+
+<p><code>SelectManager#to_sql</code> の呼び出しは、継承元の <code>TreeManager</code>クラスに渡ります。</p>
+
+<p></p>
+
+<p><code>engine.connection.visitor</code> ですが、この<code>engine</code>は最初に</p>
+
+<p></p>
+
+<p>ででてきた<code>engine</code>です。</p>
+
+<p>デバッガで、<code>visitor</code>が現れる場所を探していくと、</p>
+
+<p></p>
+
+<p>に行きつきます。ActiveRecord側で何が起きているかは深く考えないことにして、
+とにかく、<code>Arel::Visitors::SQLite</code> を見ていくことにします。</p>
+
+<p>結局、<code>TreeManager#to_sql</code> は、<code>Arel::Visitors::ToSql#accept</code>に行き着くことになります。</p>
+
+<p>ちなみに、<code>accept</code> の引数<code>@ast</code>は、<code>books.where</code>を呼びだした時に生成された <code>SelectManager</code>クラスのインスタンスで、これが<code>books.where</code>に渡された引数を保持しています。</p>
+
+<h2><code>Visitors::Visitor</code></h2>
+
+<p><code>Visitors::ToSql</code> は <code>Visitors::Visitor</code> を継承しています。</p>
+
+<p></p>
+
+<p><code>Hash.new {|hash, key| ...}</code> はハッシュのデフォルト値を定めます。<br/>
+ref. <a href="http://www.ruby-lang.org/ja/old-man/html/Hash.html">http://www.ruby-lang.org/ja/old-man/html/Hash.html</a></p>
+
+<p>上のコードで、<code>accept</code>に渡される引数は<code>Arel::Nodes::SelectStatement</code>クラスのインスタンスでした。
+したがって、<code>dispatch[object.class]</code> が実行された場合、得られる値は<code>"visit_Nodes_SelectStatement"</code>となります。</p>
+
+<p><code>visit</code>では、<code>send</code>メソッドを呼んでいます。<code>send</code>は<code>Object</code>クラスのメソッドで、
+<code>obj.send(name,args)</code>は、<code>obj</code>の<code>name</code>メソッドを<code>args</code>を引数として呼びだします。</p>
+
+<p>つまり、<code>ToSql</code>クラスの<code>visit_Nodes_SelectStatement</code>というメソッドが呼ばれることになります。</p>
+
+<p>ちなみに、<code>Visitor</code>クラスのサブクラスには、</p>
+
+<ul>
+<li><code>DepthFirst</code></li>
+<li><code>Dot</code></li>
+<li><code>Informix</code></li>
+<li><code>OrderClauses</code></li>
+</ul>
+
+
+<p>などがあります。これらのクラスのインスタンスの<code>visit</code>メソッドを呼びだしたときも、同様の処理が行われることになります。</p>
+
+<h2><code>To_Sql#visit_Nodes_SelectStatement</code></h2>
+
+<p></p>
+
+<p><code>o.cores</code>の中に、<code>books.where</code>に渡された引数が格納されています。</p>
+
+<p></p>
+
+<p>ここで察しがつくかと思いますが、ここから<code>visit</code>を再帰的に呼び出していきます。</p>
+
+<p><code>o.wheres</code> に <code>books.where</code> に渡された引数 <code>books[:title].eq(...)</code> が格納されています。
+<code>books[:title].eq(...)</code>のクラスは<code>Arel::Nodes::Equality</code>なので、8行目で<code>visit_Arel_Nodes_Equality</code>が呼ばれます。</p>
+
+<p></p>
+
+<p><code>visit o.left</code>の部分で、<code>books[:title]</code>に対して<code>visit</code>が呼ばれます。</p>
+
+<p></p>
+
+<p>最終的に、<code>"SELECT FORM books WHERE books.title = 'Head First Rails'"</code>という文字列が得られるはずです。</p>
+
+<h2>まとめ</h2>
+
+<p>Arelに特徴的なのは、<code>#where</code> や <code>#eq</code> というメソッドが呼ばれたときに、
+特に具体的な変換は行わず、引数や<code>self</code>を保持するインスタンスを返すだけ、ということではないでしょうか。</p>
+
+<p>いってみれば、<code>#where</code>や<code>#eq</code>などを使いながら「SQL構文木」を構築していくのだと思います。</p>
+
+<p><code>#to_sql</code>が呼ばれたときに、この「構文木」のノードや葉を対応するSQLに変換していくわけです。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[arel #1]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/10/15/arel-number-1/"/>
+    <updated>2012-10-15T00:00:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/10/15/arel-number-1</id>
+    <content type="html"><![CDATA[<p>Arelとは、SQLクエリを構築するためのrubyのライブラリです。</p>
+
+<p>ActiveRecord(モデル層)とデータベースの間に立ち、
+ActiveRecordにおけるメソッド呼び出しをSQLクエリに変換してくれます。<br/>
+ref. <a href="http://gihyo.jp/dev/serial/01/ruby/0043">http://gihyo.jp/dev/serial/01/ruby/0043</a></p>
+
+<p>arel-3.0.2、activerecord-3.2.8 を使ってます。</p>
+
+<p>目標は、次のコードの実行過程を理解すること。</p>
+
+<pre><code>books = Arel::Table.new :books
+books = books.where(books[:title].eq('Head First Rails'))
+puts books.to_sql
+</code></pre>
+
+<p>このコードを実行すると、<code>SELECT FROM books WHERE books.title = 'Head First Rails'</code>という文字列が返ってきます。</p>
+
+<hr />
+
+<p>Arel を使うためには、データベースとのコネクションを作る必要があるのですが、
+その部分は ActiveRecord のおまかせします。</p>
+
+<pre><code>require 'arel'
+require 'sqlite3'
+require 'active_record'
+
+ActiveRecord::Base.configurations = {'development' =&gt; {:adapter =&gt; 'sqlite3', :database =&gt; 'books.sqlite3'}}
+ActiveRecord::Base.establish_connection('development')
+
+Arel::Table.engine = ActiveRecord::Base
+</code></pre>
+
+<hr />
+
+<p>さて、つらつらと読んでいくことにします。</p>
+
+<p>でも、眠いので今日はここまで。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[rails sourcecode reading #3 -- 準備]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/10/14/rails-sourcecode-reading-number-3/"/>
+    <updated>2012-10-14T23:20:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/10/14/rails-sourcecode-reading-number-3</id>
+    <content type="html"><![CDATA[<p>まずは、ソースコードを用意しました。
+bundle を利用することにしました。</p>
+
+<pre><code>$ mkdir rails_sourcecode_reading
+$ cd rails_sourcecode_reading
+$ mkdir src
+
+$ vi Gemfile
+
+-----------------------------
+# Gemfile
+source "http://rubygems.org"
+
+gem "rails", "3.2.8"
+-----------------------------
+
+$ bundle install --path="./src"
+</code></pre>
+
+<p>これで、src/ruby/1.9.1/gems 以下に、railsに関連するgemたちが全部入ります。</p>
+
+<p>次に、ソースコードを読む環境を整えました。
+もちろん、emacsで読んでいきます。
+以下は、利用した elisp とか gem とかです。</p>
+
+<ul>
+<li><p>ctags</p>
+
+<p><code>ctags -e -R . --langmap=Ruby:.rb --ruby-types=cfFm</code> でemacs用のタグファイルを生成し、
+<code>M-.</code> でタグジャンプできます。</p>
+
+<p>参考 : <a href="http://wiki.livedoor.jp/koziy/d/ruby/ctags">http://wiki.livedoor.jp/koziy/d/ruby/ctags</a></p></li>
+<li><p>rdefs (gem)</p></li>
+<li><p>rinari (elisp)</p>
+
+<p>packege-install ではいります。
+rails 用の統合開発環境みたいなかんじです。</p></li>
+<li><p>ruby-debug</p>
+
+<p><a href="http://jampin.blog20.fc2.com/blog-entry-18.html">http://jampin.blog20.fc2.com/blog-entry-18.html</a> を参考に。</p></li>
+<li><p>yard</p>
+
+<p><code>yard server</code> でWebサーバ起動</p></li>
+</ul>
+
+
+<p>まずは、ActiveRecord と Arel あたりから読んでいこうと思います。</p>
+]]></content>
+  </entry>
+  
+</feed>

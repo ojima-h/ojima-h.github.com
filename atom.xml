@@ -1,111 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>毛無しさん@キレートレモン</title>
-  <meta name="author" content="ojima_h">
-
-  
-  <meta name="description" content="Hiveクエリを最適化する Hadoop本
-HADOOP HACKS を参考に、HiveQL が どんな Map/Reduce タスクに展開されるのかを想像しつつ(ソースは読んでないのであくまで想像)、
-効率の良い Hiveクエリの書き方を考えてみる。 まずは、普通のクエリ SELECT * &hellip;">
-  
-
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  <link rel="canonical" href="http://ojima-h.github.com/">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <link href="/atom.xml" rel="alternate" title="毛無しさん@キレートレモン" type="application/atom+xml">
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-
-  
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-35619154-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-
-
-</head>
-
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">毛無しさん@キレートレモン</a></h1>
-  
-</hgroup>
-
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:ojima-h.github.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
-</nav>
-  <div id="main">
-    <div id="content">
-      <div class="blog-index">
-  
-  
-  
-    <article>
-      
-  <header>
+  <title><![CDATA[毛無しさん@キレートレモン]]></title>
+  <link href="http://ojima-h.github.com/atom.xml" rel="self"/>
+  <link href="http://ojima-h.github.com/"/>
+  <updated>2013-08-30T16:24:01+09:00</updated>
+  <id>http://ojima-h.github.com/</id>
+  <author>
+    <name><![CDATA[ojima_h]]></name>
     
-      <h1 class="entry-title"><a href="/blog/2013/08/30/hive-optimization/">Hive 最適化</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
 
   
-
-
-<time datetime="2013-08-30T11:23:00+09:00" pubdate data-updated="true">Aug 30<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>Hiveクエリを最適化する</h1>
+  <entry>
+    <title type="html"><![CDATA[Hive 最適化]]></title>
+    <link href="http://ojima-h.github.com/blog/2013/08/30/hive-optimization/"/>
+    <updated>2013-08-30T11:23:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2013/08/30/hive-optimization</id>
+    <content type="html"><![CDATA[<h1>Hiveクエリを最適化する</h1>
 
 <ul>
 <li><a href="http://www.amazon.co.jp/Hadoop-Tom-White/dp/487311439X">Hadoop本</a></li>
@@ -543,42 +456,15 @@ Join 対象になる2つのテーブル (もしくは、サブクエリの結果
 <h3>Skewed Join</h3>
 
 <p>よく分からない。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/08/29/hadoop-tuning/">Hadoop チューニング</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-29T16:06:00+09:00" pubdate data-updated="true">Aug 29<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>Hadoop のチューニングに関してまとめ</h1>
+  <entry>
+    <title type="html"><![CDATA[Hadoop チューニング]]></title>
+    <link href="http://ojima-h.github.com/blog/2013/08/29/hadoop-tuning/"/>
+    <updated>2013-08-29T16:06:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2013/08/29/hadoop-tuning</id>
+    <content type="html"><![CDATA[<h1>Hadoop のチューニングに関してまとめ</h1>
 
 <p>効率の良い HiveQL を書くときに気をつけるべきことをまとめてみる。</p>
 
@@ -681,42 +567,15 @@ Hadoop が効率良くデータを処理することができなくなってし�
 タスクノードがディスクアクセスを要求してくることになる。</p>
 
 <p>で、ディスクアクセスが詰まってしまう。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/26/activerecord-number-1/">ActiveRecord #1</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-26T08:40:00+09:00" pubdate data-updated="true">Oct 26<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>前回 Arel が SQL を構築するところを読んだので、次は ActiveRecord がデータベースを操作するときに、どのタイミングで SQL を構築しているのかを見たいと思います。</p>
+  <entry>
+    <title type="html"><![CDATA[ActiveRecord #1]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/10/26/activerecord-number-1/"/>
+    <updated>2012-10-26T08:40:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/10/26/activerecord-number-1</id>
+    <content type="html"><![CDATA[<p>前回 Arel が SQL を構築するところを読んだので、次は ActiveRecord がデータベースを操作するときに、どのタイミングで SQL を構築しているのかを見たいと思います。</p>
 
 <p>このサンプルで、<code>User.where(...)</code>の時点でSQLが発行されてしまうと、その後に続く<code>.limit(10)</code>が反映されないはずじゃないか、というのか今回の疑問です。</p>
 
@@ -856,42 +715,15 @@ DBMに向けて投げられたことが分かりました。</p>
 <p>しかし、<code>where</code>とかをわざわざActiveRecordでラップする必要があるんですかね&#8230;
 <code>Relation</code>のなかでArelのオブジェクトを保持しておいて、<code>where</code>の処理はArelにまかせて、
 <code>Relation</code>は<code>to_a</code>とかのまわりだけ面倒みたらだめなのかな&#8230;？</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/19/linux-from-scratch-number-0/">Linux From Scratch 始めます</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-19T18:08:00+09:00" pubdate data-updated="true">Oct 19<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>前々からやる、やる、と言っていた Linux from Scratch に手をつけようと思います。</p>
+  <entry>
+    <title type="html"><![CDATA[Linux from Scratch 始めます]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/10/19/linux-from-scratch-number-0/"/>
+    <updated>2012-10-19T18:08:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/10/19/linux-from-scratch-number-0</id>
+    <content type="html"><![CDATA[<p>前々からやる、やる、と言っていた Linux from Scratch に手をつけようと思います。</p>
 
 <p>Linux from scratch (LFS) ていうのは、</p>
 
@@ -939,42 +771,15 @@ DBMに向けて投げられたことが分かりました。</p>
 <p>これで、ソースが手に入ったので、あとはひたすらビルドしてくだけなんですかね&#8230;？そうだといいですね。</p>
 
 <p>とりあえず、今日はここまで。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/16/arel-number-2/">Arel #2</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-16T03:30:00+09:00" pubdate data-updated="true">Oct 16<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>arel-3.0.2 での以下のコードの実行過程を追い掛けています。</p>
+  <entry>
+    <title type="html"><![CDATA[arel #2]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/10/16/arel-number-2/"/>
+    <updated>2012-10-16T03:30:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/10/16/arel-number-2</id>
+    <content type="html"><![CDATA[<p>arel-3.0.2 での以下のコードの実行過程を追い掛けています。</p>
 
 <h2><code>Table#[]</code></h2>
 
@@ -1116,42 +921,15 @@ ref. <a href="http://www.ruby-lang.org/ja/old-man/html/Hash.html">http://www.rub
 <p>いってみれば、<code>#where</code>や<code>#eq</code>などを使いながら「SQL構文木」を構築していくのだと思います。</p>
 
 <p><code>#to_sql</code>が呼ばれたときに、この「構文木」のノードや葉を対応するSQLに変換していくわけです。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/15/arel-number-1/">Arel #1</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-15T00:00:00+09:00" pubdate data-updated="true">Oct 15<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Arelとは、SQLクエリを構築するためのrubyのライブラリです。</p>
+  <entry>
+    <title type="html"><![CDATA[arel #1]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/10/15/arel-number-1/"/>
+    <updated>2012-10-15T00:00:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/10/15/arel-number-1</id>
+    <content type="html"><![CDATA[<p>Arelとは、SQLクエリを構築するためのrubyのライブラリです。</p>
 
 <p>ActiveRecord(モデル層)とデータベースの間に立ち、
 ActiveRecordにおけるメソッド呼び出しをSQLクエリに変換してくれます。<br/>
@@ -1188,42 +966,15 @@ Arel::Table.engine = ActiveRecord::Base
 <p>さて、つらつらと読んでいくことにします。</p>
 
 <p>でも、眠いので今日はここまで。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/14/rails-sourcecode-reading-number-3/">Rails Sourcecode Reading #3 &#8211; 準備</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-14T23:20:00+09:00" pubdate data-updated="true">Oct 14<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>まずは、ソースコードを用意しました。
+  <entry>
+    <title type="html"><![CDATA[rails sourcecode reading #3 -- 準備]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/10/14/rails-sourcecode-reading-number-3/"/>
+    <updated>2012-10-14T23:20:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/10/14/rails-sourcecode-reading-number-3</id>
+    <content type="html"><![CDATA[<p>まずは、ソースコードを用意しました。
 bundle を利用することにしました。</p>
 
 <pre><code>$ mkdir rails_sourcecode_reading
@@ -1270,42 +1021,15 @@ rails 用の統合開発環境みたいなかんじです。</p></li>
 
 
 <p>まずは、ActiveRecord と Arel あたりから読んでいこうと思います。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/14/rails-sourcecode-reading-number-2/">Rails Sourcecode Reading #2</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-14T23:20:00+09:00" pubdate data-updated="true">Oct 14<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>ruby の勉強と Webアプリケーションフレームワークの勉強のために、
+  <entry>
+    <title type="html"><![CDATA[rails sourcecode reading #2]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/10/14/rails-sourcecode-reading-number-2/"/>
+    <updated>2012-10-14T23:20:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/10/14/rails-sourcecode-reading-number-2</id>
+    <content type="html"><![CDATA[<p>ruby の勉強と Webアプリケーションフレームワークの勉強のために、
 Rails のソースコードをじっくり読んでいこう、と思い立ちました。</p>
 
 <p>そろそろまじめにやろうと思います。</p>
@@ -1313,78 +1037,24 @@ Rails のソースコードをじっくり読んでいこう、と思い立ち�
 <p>勉強したことは、このページに書いていきます。</p>
 
 <p>ruby のバージョンは 1.9.3p194、rails のバージョンは 3.2.8 です。</p>
-</div>
+]]></content>
+  </entry>
   
+  <entry>
+    <title type="html"><![CDATA[arel #1]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/10/14/arel-number-1/"/>
+    <updated>2012-10-14T23:20:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/10/14/arel-number-1</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
   
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/14/arel-number-1/">Arel #1</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-14T23:20:00+09:00" pubdate data-updated="true">Oct 14<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content">
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/15/dzen-with-japanese/">Dzenで日本語</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-15T04:38:00+09:00" pubdate data-updated="true">Jul 15<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>dzen で日本語を表示するまでのまとめ。</p>
+  <entry>
+    <title type="html"><![CDATA[dzenで日本語]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/07/15/dzen-with-japanese/"/>
+    <updated>2012-07-15T04:38:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/07/15/dzen-with-japanese</id>
+    <content type="html"><![CDATA[<p>dzen で日本語を表示するまでのまとめ。</p>
 
 <p>portage で提供されている dzen をインストールしたところ、日本語が化けた。</p>
 
@@ -1413,145 +1083,678 @@ Rails のソースコードをじっくり読んでいこう、と思い立ち�
 <p>一応ebuildをのっけてみる。。。</p>
 
 <p><a href="https://github.com/ojima-h/my-overlays/blob/master/x11-misc/dzen/dzen-9999.ebuild">https://github.com/ojima-h/my-overlays/blob/master/x11-misc/dzen/dzen-9999.ebuild</a></p>
-</div>
+]]></content>
+  </entry>
   
+  <entry>
+    <title type="html"><![CDATA[ip address and network address]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/05/09/ip-address-and-network-address/"/>
+    <updated>2012-05-09T03:17:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/05/09/ip-address-and-network-address</id>
+    <content type="html"><![CDATA[<p>ネットワークについて勉強していたので、そのまとめ兼メモ。</p>
+
+<hr />
+
+<p>192.168.0.0 ~ 192.168.255.255 のIPを用いてネットワークを構築しようと考えます。</p>
+
+<p>このとき、全てのコンピュータを 同じネットワーク下 (192.168.0.0/16) に置
+いてもいいのですが、それだと管理が大変です。そこで、サブネットに分割す
+ることを考えます。</p>
+
+<p>部署Aには、IPは 192.168.1.0 ~ 192.168.1.255、 サブネットは 192.168.1.0/24 を用いてネットワークを構築するよう依頼します。</p>
+
+<p>部署Bには、IPは 192.168.2.0 ~ 192.168.2.255、 サブネットは 192.168.2.0/24 を用いてネットワークを構築するよう依頼します。</p>
+
+<p>それぞれのネットワークに属するコンピュータはハブを介して接続します。</p>
+
+<p>これらのネットワーク同士を接続するために、もうひとつサブネット
+192.168.3.0/24 を用意します。更に、サブネット 192.168.1.0/24、
+192.168.2.0/24 のそれぞれの内部にルータを設置し、そのルータの他方の口を
+192.168.3.0/24 のネットワークにつなぎます。これで、192.168.1.0/24 と
+192.168.2.0/24 の間で相互に通信することができます。</p>
+
+<p>これらのプライベートネットワークからインターネットに接続するには、
+192.168.3.0/24 のネットワークの中にNAT機能を備えたルータが必要。</p>
+]]></content>
+  </entry>
   
+  <entry>
+    <title type="html"><![CDATA[emacs-overlay で Elisp を管理 -- その2 (プロキシ越しにsvnプロトコル)]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/05/03/gentoo-emacs-overlay-2/"/>
+    <updated>2012-05-03T02:55:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/05/03/gentoo-emacs-overlay-2</id>
+    <content type="html"><![CDATA[<p>大学のプロキシ内からだと svn プロトコルが通らず、emacs-overlay を layman に追加できなかった。</p>
+
+<p>それを無理矢理なんとかするまでの記録。</p>
+
+<ol>
+<li><p><code>layman -a emacs</code> するもタイムアウトのエラーが発生。</p>
+
+<p><code>/usr/bin/svn co svn://overlays.gentoo.org/proj/emacs/emacs-overlay/@ /var/lib/layman/emacs</code> でコケるようだ。</p></li>
+<li><p>直接、<code>/usr/bin/svn co svn://overlays.gentoo.org/proj/emacs/emacs-overlay/@ emacs</code> を実行してみるも、やはりムリ。</p></li>
+<li><p>ならばと、<code>/usr/bin/svn co https://overlays.gentoo.org/proj/emacs/emacs-overlay/@ emacs</code> を実行してみるも、やはりムリ。</p>
+
+<pre><code>svn: パス 'https://overlays.gentoo.org/proj/emacs/emacs-overlay' が見つかりません
+</code></pre>
+
+<p>とか言われる。</p></li>
+<li><p>困る。</p>
+
+<p>SSHトンネル掘ってナントカ。。。とかヨクワカラナイコトを考えた挙句、VPS に emacs-overlay のクローンを置いて http でアクセスすることにする。
+ちなみに、VPS の方は Debian です。</p></li>
+</ol>
 
 
-    </article>
+<h2>VPS に emacs-overlay のクローンを置いて http でアクセス</h2>
+
+<p>Apache はセットアップ済みで、公開ディレクトリは /var/www であるものとします。</p>
+
+<ol>
+<li><p>git-svn をインストール</p>
+
+<pre><code>aptitude install git-svn
+</code></pre></li>
+<li><p>emacs-overlay をコピーしてくる。</p>
+
+<pre><code>git svn clone svn://overlays.gentoo.org/proj/emacs/emacs-overlay/ emacs-overlay
+</code></pre></li>
+<li><p>公開ディレクトリに bare レポジトリを置く。</p>
+
+<pre><code>cd /var/www/
+git clone /path/to/emacs-overlay emacs-overlay.git --bare
+</code></pre></li>
+</ol>
+
+
+<p>これで、<code>git clone http://xxxxxx/emacs-overlay.git</code> でクローンできるようになっているはず。</p>
+
+<h2>layman の overlay のリストに追加する</h2>
+
+<ol>
+<li><p>/var/lib/layman/my-list.xml を作成して、次のような内容を書く。</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE repositories SYSTEM "/dtd/repositories.dtd"&gt;
+&lt;repositories xmlns="" version="1.0"&gt;
+  &lt;repo quality="experimental" status="official"&gt;
+    &lt;name&gt;&lt;![CDATA[emacs-clone]]&gt;&lt;/name&gt;
+    &lt;description&gt;&lt;![CDATA[Provide Emacs related ebuilds which are a bit experimental or
+    work-in-progress. Don't rely on them, but don't hesitate to file bugs or
+    write emails.]]&gt;&lt;/description&gt;
+    &lt;homepage&gt;http://your/homepage/uri&lt;/homepage&gt;
+    &lt;owner type="project"&gt;
+      &lt;email&gt;sample@example.com&lt;/email&gt;
+    &lt;/owner&gt;
+    &lt;source type="git"&gt;http://server/uri/emacs-overlay.git&lt;/source&gt;
+  &lt;/repo&gt;
+&lt;/repositories&gt;
+</code></pre></li>
+<li><p>/etc/layman/layman.cfg に次のような内容を書く:</p>
+
+<pre><code>.....
+
+overlays  : http://www.gentoo.org/proj/en/overlays/repositories.xml
+            file:///var/lib/layman/my-list.xml
+
+.....
+</code></pre></li>
+<li><p>layman を更新する。</p>
+
+<pre><code>layman -S
+</code></pre></li>
+<li><p><code>layman -L</code> を実行して、いま追加したオーバレイが表示されれば OK.</p></li>
+</ol>
+
+
+<hr />
+
+<p>振り返ってみると、がんばったわりに得るものが少ない気が。。。</p>
+
+<p>あとは、更新が面倒くさそう。Git の bare レポジトリって直接更新できないのかな&#8230;</p>
+]]></content>
+  </entry>
   
-  <div class="pagination">
-    
-      <a class="prev" href="/blog/page/2/">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
-<aside class="sidebar">
+  <entry>
+    <title type="html"><![CDATA[emacs-overlay で Elisp をパッケージ管理]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/05/02/gentoo-emacs-overlay/"/>
+    <updated>2012-05-02T22:59:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/05/02/gentoo-emacs-overlay</id>
+    <content type="html"><![CDATA[<p>関西 Emacs で Elisp のパッケージ管理の話が出てきたことだし、
+portage で Elisp を管理してみることにする。</p>
+
+<p>こういうのって、まずは Overlay から見てみるものなのかな&#8230;</p>
+
+<p>ということで、emacs-overlay を使ってみる。</p>
+
+<p>参考: <a href="http://overlays.gentoo.org/proj/emacs/">http://overlays.gentoo.org/proj/emacs/</a></p>
+
+<ol>
+<li><p>layman をインストール</p>
+
+<pre><code>emerge layman
+</code></pre></li>
+<li><p>emacs-overlay を追加</p>
+
+<pre><code>layman -a emacs
+</code></pre></li>
+<li><p>layman をソースに追加。</p>
+
+<pre><code>echo "source /var/lib/layman/make.conf" &gt;&gt; /etc/make.conf
+</code></pre></li>
+</ol>
+
+
+<p><code>/var/lib/layman/emacs/app-emacs/</code> とかを見るとインストールできる Elisp が見える。</p>
+
+<p>anything とか evil とかあるけど、、、、<br/>
+あんまり数は無いのね&#8230;.</p>
+
+<hr />
+
+<p>ちなみに大学のプロキシ内からだと、svn プロトコルが通らずハマったけれど、
+それはまた別のお話。</p>
+
+<p><a href="http://ojima-h.github.com/blog/2012/05/03/gentoo-emacs-overlay-2/">emacs-overlay で Elisp をパッケージ管理 その2</a></p>
+]]></content>
+  </entry>
   
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2013/08/30/hive-optimization/">Hive 最適化</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/29/hadoop-tuning/">Hadoop チューニング</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/26/activerecord-number-1/">ActiveRecord #1</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/19/linux-from-scratch-number-0/">Linux from Scratch 始めます</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/16/arel-number-2/">arel #2</a>
-      </li>
-    
-  </ul>
-</section>
-<section>
-  <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/emacs'>emacs (2)</a></li><li><a href='/blog/categories/gentoo'>gentoo (2)</a></li><li><a href='/blog/categories/hadoop'>Hadoop (1)</a></li><li><a href='/blog/categories/hive'>Hive (1)</a></li><li><a href='/blog/categories/inov2013'>inov2013 (6)</a></li><li><a href='/blog/categories/linux-from-scratch'>linux-from-scratch (1)</a></li><li><a href='/blog/categories/misc'>misc (2)</a></li><li><a href='/blog/categories/octpress'>octpress (1)</a></li><li><a href='/blog/categories/rails'>rails (1)</a></li><li><a href='/blog/categories/rails-sourcecode-reading'>rails-sourcecode-reading (7)</a></li><li><a href='/blog/categories/ruby'>ruby (1)</a></li><li><a href='/blog/categories/xmonad'>xmonad (1)</a></li></ul>
-</section>
+  <entry>
+    <title type="html"><![CDATA[Rails SourceCode Reading #1]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/04/22/rsr-1/"/>
+    <updated>2012-04-22T19:42:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/04/22/rsr-1</id>
+    <content type="html"><![CDATA[<h2>前半は Ruby の基礎のお話。</h2>
 
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
-  </ul>
+<p><a href="http://i.loveruby.net/ja/rhg/book/minimum.html">http://i.loveruby.net/ja/rhg/book/minimum.html</a> に沿って話した。</p>
+
+<p>要は、<strong>全てのモノはオブジェクトである</strong>、というお話。</p>
+
+<p>話したこととしては、</p>
+
+<ul>
+<li>クラスは Class というクラスのインスタンスである。</li>
+<li>モジュールは Module というクラスのインスタンスである。</li>
+<li>Module クラスは Class クラスのインスタンスである。</li>
+<li>Class クラスは Class クラスのインスタンスである。</li>
+<li><p>すべてのクラスは superclass に Object を持つ。
+Object クラスの superclass は nil である。</p>
+
+<p>(今は、Object クラスの superclass は BasicObject になっているぽい。)</p>
+
+<p>(今日話したときは、「全てのオブジェクトは Object を superclass に持つ」とか言ってた気がする)</p></li>
+</ul>
+
+
+<p>とかとか。</p>
+
+<p>一応整理しておくと、</p>
+
+<ul>
+<li>オブジェクト間の関係
+
+<ul>
+<li>クラス - インスタンスの関係</li>
+<li>is_a 関係</li>
+</ul>
+</li>
+<li>クラス間の関係
+
+<ul>
+<li>継承関係</li>
+<li>ネスト</li>
+</ul>
+</li>
+</ul>
+
+
+<p>今日話した時は、クラス - インスタンスの関係と is_a 関係を混同していた&#8230;</p>
+
+<h3>is_a 関係について</h3>
+
+<p><a href="http://d.hatena.ne.jp/willnet/20080523/1211512760">http://d.hatena.ne.jp/willnet/20080523/1211512760</a></p>
+
+<p><code>foo.is_a? Foo</code> が真になるのは、</p>
+
+<ul>
+<li>foo が Foo のインスタンスであるとき</li>
+<li>foo が Foo のサブクラスのインスタンスであるとき</li>
+<li>foo が モジュール Foo をインクルードしたクラスのインスタンスであるとき</li>
+<li>foo が モジュール Foo をインクルードしたクラスのサブクラスのインスタンスであるとき</li>
+</ul>
+
+
+<p>あとは、特異メソッドの話。</p>
+
+<p>結局、<code>include</code> と <code>extend</code> の違いを説明したかっただけな気がする。</p>
+
+<h2>後半は ActiveRecord の解読</h2>
+
+<p><a href="http://ojima-h.github.com/rails-sourcecode-reading-slide-1/">http://ojima-h.github.com/rails-sourcecode-reading-slide-1/</a></p>
+
+<pre><code>@@@ ruby
+rails generate scaffold Foo foo:string
+</code></pre>
+
+<p>てやったときにできる <code>Foo#foo</code> ていうメソッドがどうやって定義されているのかを解説した。</p>
+
+<ul>
+<li>missing_method コワイ</li>
+<li>eval コワイ</li>
+</ul>
+
+
+<p>という結論でした。</p>
+
+<h2>ツールについて</h2>
+
+<ul>
+<li>showoff が便利</li>
+<li>rdefs.el が便利だけど、使いにくい。
+せめて、バッファがリードオンリーなのをなんとかしたい。</li>
+</ul>
+
+]]></content>
+  </entry>
   
-  <a href="https://github.com/ojima-h">@ojima-h</a> on GitHub
+  <entry>
+    <title type="html"><![CDATA[showoff 使ってみた]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/04/22/showoff-intro/"/>
+    <updated>2012-04-22T14:00:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/04/22/showoff-intro</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/schacon/showoff">https://github.com/schacon/showoff</a></p>
+
+<p>Ruby + Markdown で HTML なスライドをつくれる、ということで、使ってみた。</p>
+
+<p>感想は</p>
+
+<ul>
+<li>Markdown やっぱり素敵</li>
+<li>Markdown から直にプレビューできる</li>
+<li>コマンド一発で github page に公開できるのが便利</li>
+<li>ある程度きれいにみせようと思ったら、CSS と javascript がんばって書
+かないといけない</li>
+<li>一枚のスライドのなかで内容を少しづつ見せる、ってことができなかった</li>
+</ul>
+
+
+<p>てかんじでした。</p>
+
+<hr />
+
+<p>使うまでの記録を書いておく。</p>
+
+<h2>とりあえず使う</h2>
+
+<p>まずはインストール。</p>
+
+<pre><code>gem install showoff
+</code></pre>
+
+<p>新規プレゼンテーションの作成</p>
+
+<pre><code>showoff create new_presentation
+cd new_presentation
+</code></pre>
+
+<p>すると、&#8221;one&#8221; というディレクトリの下に &#8220;01_slide.md&#8221; というファイルが
+できているはず。</p>
+
+<p>この &#8220;01_slide.md&#8221; にマークダウンで色々書いていけばよい。</p>
+
+<p><code>!SLIDE</code> という行があると、そこでスライドが切り替わる。</p>
+
+<p>コマンドラインから</p>
+
+<pre><code>$ showoff serve
+</code></pre>
+
+<p>を実行し、<code>localhost:9090</code> にアクセスすると、プレビューを見ることがで
+きる。</p>
+
+<p>ちなみに、Firefox + Vimperator を使っているとスライドの操作ができない
+ので注意。<code>Shift + escape</code> で Vimperator のキーを無効にすれば大丈夫。</p>
+
+<p>さらに、</p>
+
+<pre><code>$ showoff static
+</code></pre>
+
+<p>で、&#8221;static&#8221; というディレクトリができて、その中に整形された HTML が吐かれる。</p>
+
+<p>詳しい使いかたは <a href="https://github.com/schacon/showoff">https://github.com/schacon/showoff</a> を参照。</p>
+
+<h2>github pages への公開方法</h2>
+
+<p>まずは、ソース全体を公開するためのレポジトリを作成。
+全部のファイルをコミットする。</p>
+
+<p>そしたら、おもむろに</p>
+
+<pre><code>$ showoff github
+</code></pre>
+
+<p>これで、&#8221;gh_pages&#8221; というブランチに、<code>showoff static</code> されたコードをコ
+ミットしてくれる。</p>
+
+<p>あとは、<code>git push orgin gh-pages</code> するだけで、
+&#8220;username.github.com/repository-name/&#8221; にスライドが公開される。</p>
+
+<hr />
+
+<p>うーん、やっぱりちょっとづつ表示していくのが欲しいな&#8230;.
+javascript でできるのかな&#8230;</p>
+]]></content>
+  </entry>
   
-  <script type="text/javascript">
-    $.domReady(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
+  <entry>
+    <title type="html"><![CDATA[cucumber + rspec + webrat の落とし穴]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/04/16/cucumber-rspec-webrat-install/"/>
+    <updated>2012-04-16T21:17:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/04/16/cucumber-rspec-webrat-install</id>
+    <content type="html"><![CDATA[<p>cucumber + rspec + webrat ではまったのでメモ。</p>
 
-        github.showRepos({
-            user: 'ojima-h',
-            count: 0,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
-</section>
+<h2>visit が効かない</h2>
 
+<pre><code>When /^visit "(.*)"$/ do |page|
+  visit page
+  p response
+end
+</code></pre>
 
-<section>
-  <h1>Latest Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Status updating&#8230;</li>
-  </ul>
-  <script type="text/javascript">
-    $.domReady(function(){
-      getTwitterFeed("ojima_h", 4, false);
-    });
-  </script>
-  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+<p>ってやると、<code>nil</code> が表示される。。。</p>
+
+<p>調べていくと、こんなページを発見。</p>
+
+<p><a href="http://forums.pragprog.com/forums/95/topics/4951">http://forums.pragprog.com/forums/95/topics/4951</a></p>
+
+<p>とりあえず、features/support/env.rb に以下を追加。</p>
+
+<pre><code>require 'webrat'
+
+Webrat.configure do  |config|
+  config.mode = :rack
+end
+</code></pre>
+
+<p>そしたら、こんなエラーが発生。。。</p>
+
+<pre><code>No response yet. Request a page first. (Rack::Test::Error)
+</code></pre>
+
+<p><a href="http://forums.pragprog.com/forums/95/topics/8962">http://forums.pragprog.com/forums/95/topics/8962</a></p>
+
+<p>このページを参考に、step の定義を次のように変更.</p>
+
+<pre><code>When /^visit "(.*)"$/ do |url|
+  visit url
+  p page
+end
+</code></pre>
+
+<p>無事実行されました。</p>
+
+<h2>have_tag にブロックを渡せない</h2>
+
+<pre><code>page.body.should have_selector('a') do |a|
+  p a
+end
+</code></pre>
+
+<p>ってやっても期待する結果が得られない。。。</p>
+
+<p>未だ解決策みつからず。</p>
+
+<p>まぁ、いいか</p>
+]]></content>
+  </entry>
   
-    <a href="http://twitter.com/ojima_h" class="twitter-follow-button" data-show-count="false">Follow @ojima_h</a>
+  <entry>
+    <title type="html"><![CDATA[tree]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/04/16/tree-command/"/>
+    <updated>2012-04-16T19:51:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/04/16/tree-command</id>
+    <content type="html"><![CDATA[<p>&#8220;tree&#8221; っていうコマンドが面白い。</p>
+
+<pre><code>emerge app-text/tree
+</code></pre>
+
+<p>こんなかんじで表示される</p>
+
+<pre><code>$ tree a
+a
+|-- b
+|   `-- c
+`-- d
+</code></pre>
+]]></content>
+  </entry>
   
-</section>
+  <entry>
+    <title type="html"><![CDATA[Github pages + Octpress]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/04/15/github-pages-and-octpress/"/>
+    <updated>2012-04-15T13:44:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/04/15/github-pages-and-octpress</id>
+    <content type="html"><![CDATA[<p>GitHub Pages + Octpressでブログ立ち上げるまでの記録。</p>
+
+<ul>
+<li><a href="http://mattn.kaoriya.net/software/lang/ruby/20111017205717.htm">http://mattn.kaoriya.net/software/lang/ruby/20111017205717.htm</a></li>
+<li><a href="http://octopress.org/docs/setup/">http://octopress.org/docs/setup/</a></li>
+<li><a href="http://octopress.org/docs/deploying/github/">http://octopress.org/docs/deploying/github/</a></li>
+<li><a href="http://octopress.org/docs/blogging/">http://octopress.org/docs/blogging/</a></li>
+</ul>
 
 
+<p>を参考に。</p>
+
+<p>環境は、Gentoo-3.2.1-r2 / ruby 1.9.3p0</p>
+
+<ol>
+<li><p><em>username</em>.github.com というレポジトリを新規作成</p></li>
+<li><p>Octpressのソースを取得。</p>
+
+<pre><code>git clone https://github.com/imathis/octopress
+cd octopress
+</code></pre></li>
+<li><p>インストール</p>
+
+<pre><code>rake install
+rake setup_github_pages
+</code></pre>
+
+<p><code>rake setup_github_pages</code> するとGitレポジトリのURIを聞かれるので、
+さっき作ったレポジトリ (= <code>git@github.com/username/username.github.com</code>) を指定する。
+ここで、<code>.git/config</code>を書き換えて、orgin とかを設定してくれるぽい。</p></li>
+<li><p>とりあえず、なにか投稿してみる。</p>
+
+<pre><code>rake new_post["hello world"]
+</code></pre>
+
+<p>&#8220;hello world&#8221;の部分はポストのタイトルを指定します。
+ここで指定したものがURLになります。<br/>
+(実際は、<code>.../:year/:month/:day/:title</code>ってかんじ)</p>
+
+<p>ページに表示されるタイトルはあとからいじれます。</p>
+
+<p>実行すると、<code>source/_posts/&lt;yaer&gt;-&lt;month&gt;-&lt;day&gt;-hello-world.markdown</code>というファイルが
+生成されます。</p>
+
+<pre><code>---
+layout: post
+title: こんにちは
+date: 2012-04-14 23:31
+comments: true
+categories: diary
+---
+
+こんにちは! 世界!
+------------------
+
+むにゃむにゃ
+</code></pre>
+
+<p>こんなかんじて適当に編集します。</p></li>
+<li><p>さあ、公開してみましょう</p>
+
+<p>今作成したファイルをデプロイ用のディレクトリにコピーします。</p>
+
+<pre><code>rake generate
+</code></pre>
+
+<p>この段階では、まだアップロードされてません。</p>
+
+<p>アップするまえにローカル環境で確認することができます。</p>
+
+<pre><code>rake preview
+</code></pre>
+
+<p>として、<code>localhost:4000</code>にアクセスすればおけ。</p>
+
+<p>問題がないようなら、githubにあげます。</p>
+
+<pre><code>rake deploy
+</code></pre></li>
+<li><p>成功していれば (失敗しても)、githubからメールが来ます。</p></li>
+</ol>
 
 
+<p>ちなみに <code>rake deploy</code>でpushされるのは、public/ 以下の内容のみ。
+ソース全体もpushしておきましょう。(って書いてあった)</p>
 
+<pre><code>git add .
+git commit -m "message"
+git push origin source
+</code></pre>
+
+<hr />
+
+<p>なにが便利かっていうと</p>
+
+<ul>
+<li>手元で編集できる。Emacsとかでね。</li>
+<li>localhost でプレビューできる。</li>
+<li>rake 一発で公開できる。</li>
+</ul>
+
+
+<p>そういえば、Octpressみたいな形で配布されるアプリ(？)って初めて見た。<br/>
+たしかに、Rakefile に色々書いておけばシステムにインストールする必要ないしな。。。</p>
+
+<p>それにしても便利。</p>
+]]></content>
+  </entry>
   
-</aside>
+  <entry>
+    <title type="html"><![CDATA[第0回 Railsソースコードリーディング]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/04/14/rails-sourcecode-reading-0/"/>
+    <updated>2012-04-14T23:31:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/04/14/rails-sourcecode-reading-0</id>
+    <content type="html"><![CDATA[<p>なんとなくで始めみてみたRailsソースコードリーディング。
+手探りながらの第0回でした。</p>
 
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - ojima_h -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
+<p>まぁ、ぐだぐだ、でした</p>
 
-</footer>
+<p>今日のお題は</p>
+
+<p><strong>Railsの概要と基本的な使い方</strong></p>
+
+<p>まずは、MVCに関するお話。<br/>
+MVCとは、アプリケーションの構成を</p>
+
+<ul>
+<li>M (=Model)
+データを管理するコンポーネント</li>
+<li>V(=View)
+ユーザの目の前に表示される部分を管理するコンポーネント</li>
+<li>C(=controller)
+ModelとViewのあいだをとりもつコンポーネント</li>
+</ul>
+
+
+<p>の3つに分けて捉えましょう、という考えかた。</p>
+
+<p>一方で、Railsの構成がどうなっているかというと、、、</p>
+
+<p>実はRails本体はからっぽで、実体は次のようなライブラリ群からできている。</p>
+
+<ul>
+<li><p>ActionPack</p>
+
+<ul>
+<li>ActionController</li>
+<li>ActionView</li>
+<li>ActionDispatch</li>
+</ul>
+</li>
+<li><p>ActiveRecord</p></li>
+<li><p>ActiveModel</p></li>
+<li><p>ActiveResource</p></li>
+<li><p>etc&#8230;</p></li>
+<li><p>railties</p></li>
+</ul>
+
+
+<p>そして、M,V,C のそれぞれと、 Railsの各構成要素のそれぞれが一対一に対応している。</p>
+
+<ul>
+<li>Model &lt;=> ActiveRecord, ActiveModel, ActiveResource</li>
+<li>View &lt;=> ActionView</li>
+<li>Controller &lt;=> ActionController, ActionDispatch</li>
+</ul>
+
+
+<p>そしてそして、railtiesがこれらのライブラリ群をまとめあげて、コマンドラインインターフェイスを提供していると。。。</p>
+
+<p>というわけで、次回以降はライブラリ群を1つ1つ読み解いていこう!! というお話でした。</p>
+
+<p>とりあえず、次回はActiveRecordで。来週です。</p>
+
+<hr />
+
+<p>さてさて、Railsの簡単な使いかたを勉強しましょう、ということになりました。</p>
+
+<pre><code>rails new sample
+</code></pre>
+
+<p>からはじめて、</p>
+
+<pre><code>rails generate scaffold pages title:string content:text
+</code></pre>
+
+<p>ここまでは何の問題もなかったんです。</p>
+
+<p>ところが</p>
+
+<pre><code>rake db:migrate
+</code></pre>
+
+<p>したところ、、、</p>
+
+<p><strong>全員エラー!!!</strong></p>
+
+<p>しかも、エラーメッセージが意味不明だし。</p>
+
+<p>そんなこんなしているうちに時間がきてしまい、結局グダグダになってしまいました。</p>
+
+<p>はぁ、書くの飽きた。。。</p>
+
+<p>まぁ、そんなかんじの第0回でした。</p>
+]]></content>
+  </entry>
   
+  <entry>
+    <title type="html"><![CDATA[はじめましてのご挨拶]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/04/14/hello-world/"/>
+    <updated>2012-04-14T23:31:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/04/14/hello-world</id>
+    <content type="html"><![CDATA[<h2>ブログはじめました</h2>
 
+<p>Railsソースコードリーディングを機に、いまさらながらブログなど始めてみ
+ました。</p>
 
+<p>github page + octpress + jekyll 環境でやってます。</p>
 
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) {return;}
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
-
-
-
-
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
-
-
-
-
-
-</body>
-</html>
+<p>テストがてら、初めての投稿。。。</p>
+]]></content>
+  </entry>
+  
+</feed>

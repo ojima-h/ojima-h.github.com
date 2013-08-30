@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: linux-from-scratch | 毛無しさん@キレートレモン]]></title>
+  <link href="http://ojima-h.github.com/blog/categories/linux-from-scratch/atom.xml" rel="self"/>
+  <link href="http://ojima-h.github.com/"/>
+  <updated>2013-08-30T16:24:01+09:00</updated>
+  <id>http://ojima-h.github.com/</id>
+  <author>
+    <name><![CDATA[ojima_h]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Linux from Scratch 始めます]]></title>
+    <link href="http://ojima-h.github.com/blog/2012/10/19/linux-from-scratch-number-0/"/>
+    <updated>2012-10-19T18:08:00+09:00</updated>
+    <id>http://ojima-h.github.com/blog/2012/10/19/linux-from-scratch-number-0</id>
+    <content type="html"><![CDATA[<p>前々からやる、やる、と言っていた Linux from Scratch に手をつけようと思います。</p>
+
+<p>Linux from scratch (LFS) ていうのは、</p>
+
+<blockquote><p>  Linux From Scratch(リナックス フロム スクラッチ、LFS)とは、Linuxを1から構築しようという試みである。すなわち、カーネルなども含めてすべて手作業でソースコードからコンパイルして作り上げる。</p>
+
+<p>  具体的には、まず現在動作しているLinuxシステム上で、LFSをコンパイルするためのシステムを構築する。そのシステム上で、実際に稼働するLFSのシステムをコンパイルし、実際に起動することが出来る状態にまでもって行くという手順を踏む。</p>
+
+<p>  ref. http://ja.wikipedia.org/wiki/Linux_from_Scratch</p></blockquote>
+
+<p>ということです。でもって、</p>
+
+<blockquote><p>  LFS teaches people how a Linux system works internally
+  Building LFS teaches you about all that makes Linux tick, how things work together and depend on each other. And most importantly, how to customize it to your own tastes and needs.</p>
+
+<p>  ref. http://www.linuxfromscratch.org/lfs/</p></blockquote>
+
+<p>楽しく勉強できる、ということのようです。</p>
+
+<p>本家 : <a href="http://www.linuxfromscratch.org">http://www.linuxfromscratch.org</a></p>
+
+<h2>準備</h2>
+
+<p><a href="http://www.linuxfromscratch.org/lfs/downloads/stable/">http://www.linuxfromscratch.org/lfs/downloads/stable/</a> から、LFS-BOOK-7.2.pdf もしくは、LFS-BOOK-7.2.tar.bz (HTMLが入ってる)をダウンロードします。このBOOKに従って粛々とビルドしていきます。</p>
+
+<p>次に、適当なマシンにLinuxをインストールします。LFSやるなら、32bitマシンが無難ぽいです。</p>
+
+<p>というわけで、Core 2 Quad のマシンにGentooをインストールしました。安心の最小構成です。
+手元のノートからSSHでアクセスすることにします。</p>
+
+<p>Gentooがインストールされたシステムを「ホスト」と呼びます。
+ホスト側で最小限のシステムをビルドした後、新しく構築した側のシステムに移りビスドを進めていくという
+流れです。</p>
+
+<h2>パーティション作成</h2>
+
+<p>LFSをビルドするために、新しいのパーティションを作ります。今回は10GBとしました。
+スワップ領域、ブートパーティションはホストと共有することにました。</p>
+
+<p></p>
+
+<p>新しくつくったパーティションを<code>/mnt/lfs</code>以下にマウントし、そこにソースをダウンロードしてきます。</p>
+
+<p>ダウンロードするべきソースのリストは、<a href="http://www.linuxfromscratch.org/lfs/downloads/stable/LFS-BOOK-7.2.tar.bz2">http://www.linuxfromscratch.org/lfs/downloads/stable/LFS-BOOK-7.2.tar.bz2</a> に含まれる wget-list にあります。md5sum も含まれています。</p>
+
+<p></p>
+
+<p>あとはユーザを作って、環境変数を調整したり... 詳しくはLFS-BOOK参照。</p>
+
+<p>これで、ソースが手に入ったので、あとはひたすらビルドしてくだけなんですかね...？そうだといいですね。</p>
+
+<p>とりあえず、今日はここまで。</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,720 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Hive 最適化 - 毛無しさん@キレートレモン</title>
+  <meta name="author" content="ojima_h">
+
+  
+  <meta name="description" content="Hiveクエリを最適化する Hadoop本
+HADOOP HACKS を参考に、HiveQL が どんな Map/Reduce タスクに展開されるのかを想像しつつ(ソースは読んでないのであくまで想像)、
+効率の良い Hiveクエリの書き方を考えてみる。 まずは、普通のクエリ SELECT * &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ojima-h.github.com/blog/2013/08/30/hive-optimization/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="毛無しさん@キレートレモン" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35619154-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">毛無しさん@キレートレモン</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ojima-h.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Hive 最適化</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-30T11:23:00+09:00" pubdate data-updated="true">Aug 30<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h1>Hiveクエリを最適化する</h1>
+
+<ul>
+<li><a href="http://www.amazon.co.jp/Hadoop-Tom-White/dp/487311439X">Hadoop本</a></li>
+<li><a href="http://www.amazon.co.jp/Hadoop-Hacks-%E2%80%95%E3%83%97%E3%83%AD%E3%83%95%E3%82%A7%E3%83%83%E3%82%B7%E3%83%A7%E3%83%8A%E3%83%AB%E3%81%8C%E4%BD%BF%E3%81%86%E5%AE%9F%E8%B7%B5%E3%83%86%E3%82%AF%E3%83%8B%E3%83%83%E3%82%AF-%E4%B8%AD%E9%87%8E-%E7%8C%9B/dp/4873115469">HADOOP HACKS</a></li>
+</ul>
+
+
+<p>を参考に、HiveQL が どんな Map/Reduce タスクに展開されるのかを想像しつつ(ソースは読んでないのであくまで想像)、
+効率の良い Hiveクエリの書き方を考えてみる。</p>
+
+<h2>まずは、普通のクエリ</h2>
+
+<pre><code>SELECT * FROM movie
+</code></pre>
+
+<p>は、どんな Map/Reduce タスクに変換されるんでしょうか？</p>
+
+<p>hive で</p>
+
+<pre><code>&gt; EXPLAIN SELECT * FROM movie;
+</code></pre>
+
+<p>とやってみると、</p>
+
+<pre><code>ABSTRACT SYNTAX TREE:
+  (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME movie))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR TOK_ALLCOLREF))))
+
+STAGE DEPENDENCIES:
+  Stage-0 is a root stage
+
+STAGE PLANS:
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+</code></pre>
+
+<p>と返っくる。
+たぶん、<code>Stage-0</code> は「ただ吐き出す」ていうタスクなんだろう。</p>
+
+<p><code>SELECT * FROM movie LIMIT 10</code> と比較してみる:</p>
+
+<pre><code>&gt; EXPLAIN SELECT * FROM movie LIMIT 10;
+
+ABSTRACT SYNTAX TREE:
+  (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME all_member))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR TOK_ALLCOLREF)) (TOK_LIMIT 10)))
+
+STAGE DEPENDENCIES:
+  Stage-0 is a root stage
+
+STAGE PLANS:
+  Stage: Stage-0
+    Fetch Operator
+      limit: 10
+</code></pre>
+
+<p><code>Stage-0</code> は、<code>LIMIT</code> の面倒だけ見ている気がする。</p>
+
+<h2>SELECT WHERE してみる</h2>
+
+<pre><code>&gt; EXPLAIN SELECT id FROM movie WHERE year = 2000 LIMIT 10;
+
+ABSTRACT SYNTAX TREE:
+  (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME movie))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (TOK_TABLE_OR_COL id))) (TOK_WHERE (= (TOK_TABLE_OR_COL year) 2000))))
+
+STAGE DEPENDENCIES:
+  Stage-1 is a root stage
+  Stage-0 is a root stage
+
+STAGE PLANS:
+  Stage: Stage-1
+    Map Reduce
+      Alias -&gt; Map Operator Tree:
+        movie 
+          TableScan
+            alias: movie
+            Filter Operator
+              predicate:
+                  expr: (year = 2000)
+                  type: boolean
+              Select Operator
+                expressions:
+                      expr: id
+                      type: int
+                outputColumnNames: _col0
+                File Output Operator
+                  compressed: false
+                  GlobalTableId: 0
+                  table:
+                      input format: org.apache.hadoop.mapred.TextInputFormat
+                      output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+</code></pre>
+
+<p>たぶん mapper はこんなイメージかな&#8230;？</p>
+
+<pre><code>public void map(Integer key, Text row, OutputCollector&lt;Integer, Text&gt; output, ...) {
+    Integer id = row.getId();
+    Integer year = row.getYear();
+
+    if (year == 2000) {
+        output.collect(key, new Writable(id));
+    }
+}
+</code></pre>
+
+<h2>GROUP BY してみる</h2>
+
+<pre><code>&gt; EXPLAIN SELECT year, count(*) FROM movie GROUP BY year;
+
+ABSTRACT SYNTAX TREE:
+  (TOK_QUERY (TOK_FROM (TOK_TABREF (TOK_TABNAME movie))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (TOK_TABLE_OR_COL year)) (TOK_SELEXPR (TOK_FUNCTIONSTAR count))) (TOK_GROUPBY (TOK_TABLE_OR_COL year))))
+
+STAGE DEPENDENCIES:
+  Stage-1 is a root stage
+  Stage-0 is a root stage
+
+STAGE PLANS:
+  Stage: Stage-1
+    Map Reduce
+      Alias -&gt; Map Operator Tree:
+        movie 
+          TableScan
+            alias: movie
+            Select Operator
+              expressions:
+                    expr: year
+                    type: string
+              outputColumnNames: year
+              Group By Operator
+                aggregations:
+                      expr: count()
+                bucketGroup: false
+                keys:
+                      expr: year
+                      type: string
+                mode: hash
+                outputColumnNames: _col0, _col1
+                Reduce Output Operator
+                  key expressions:
+                        expr: _col0
+                        type: string
+                  sort order: +
+                  Map-reduce partition columns:
+                        expr: _col0
+                        type: string
+                  tag: -1
+                  value expressions:
+                        expr: _col1
+                        type: bigint
+      Reduce Operator Tree:
+        Group By Operator
+          aggregations:
+                expr: count(VALUE._col0)
+          bucketGroup: false
+          keys:
+                expr: KEY._col0
+                type: string
+          mode: mergepartial
+          outputColumnNames: _col0, _col1
+          Select Operator
+            expressions:
+                  expr: _col0
+                  type: string
+                  expr: _col1
+                  type: bigint
+            outputColumnNames: _col0, _col1
+            File Output Operator
+              compressed: false
+              GlobalTableId: 0
+              table:
+                  input format: org.apache.hadoop.mapred.TextInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+</code></pre>
+
+<p>Map Operator Tree の中に Reduce Output Operator があるのは、map task と reduce task 間のデータ転送量を小さくするために
+map task 側で集約関数(combiner)を呼ぶためだと思われる。</p>
+
+<p>たぶん mapper はこんなイメージ&#8230;</p>
+
+<pre><code>public void map(Integer key, Text row, OutputCollector&lt;Integer, Text&gt; output, ...) {
+    Integer year = row.getYear();
+
+    output.collect(year, new Writable(key));
+}
+</code></pre>
+
+<p>reducer (と combiner) は多分こんな感じ&#8230;</p>
+
+<pre><code>publick void reduce(Text year, Iterator&lt;Text&gt; values, OutputCollector&lt;Text,BigInt&gt; output, ...) {
+    BigInt count = values.count();
+
+    output.collect(&lt;何かしらのKEY&gt;, new Writable(new Row(year, count)));
+}
+</code></pre>
+
+<h2>問題は JOIN</h2>
+
+<pre><code>&gt; EXPLAIN SELECT a.id, b.rating FROM movie a JOIN score b on a.id = b.movie_id
+
+ABSTRACT SYNTAX TREE:
+  (TOK_QUERY (TOK_FROM (TOK_JOIN (TOK_TABREF (TOK_TABNAME movie) a) (TOK_TABREF (TOK_TABNAME score) b) (= (. (TOK_TABLE_OR_COL a) id) (. (TOK_TABLE_OR_COL b) movie_id)))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) id)) (TOK_SELEXPR (. (TOK_TABLE_OR_COL b) rating)))))
+
+STAGE DEPENDENCIES:
+  Stage-1 is a root stage
+  Stage-0 is a root stage
+
+STAGE PLANS:
+  Stage: Stage-1
+    Map Reduce
+      Alias -&gt; Map Operator Tree:
+        a 
+          TableScan
+            alias: a
+            Reduce Output Operator
+              key expressions:
+                    expr: id
+                    type: int
+              sort order: +
+              Map-reduce partition columns:
+                    expr: id
+                    type: int
+              tag: 0
+              value expressions:
+                    expr: id
+                    type: int
+        b 
+          TableScan
+            alias: b
+            Reduce Output Operator
+              key expressions:
+                    expr: movie_id
+                    type: int
+              sort order: +
+              Map-reduce partition columns:
+                    expr: movie_id
+                    type: int
+              tag: 1
+              value expressions:
+                    expr: rating
+                    type: int
+      Reduce Operator Tree:
+        Join Operator
+          condition map:
+               Inner Join 0 to 1
+          condition expressions:
+            0 {VALUE._col0}
+            1 {VALUE._col1}
+          handleSkewJoin: false
+          outputColumnNames: _col0, _col3
+          Select Operator
+            expressions:
+                  expr: _col0
+                  type: int
+                  expr: _col3
+                  type: int
+            outputColumnNames: _col0, _col1
+            File Output Operator
+              compressed: false
+              GlobalTableId: 0
+              table:
+                  input format: org.apache.hadoop.mapred.TextInputFormat
+                  output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+</code></pre>
+
+<p>処理の流れはたぶんこんな感じ:</p>
+
+<ol>
+<li><p><strong>MAPPER</strong></p>
+
+<p><code>movie</code> テーブルと <code>score</code> テーブルから必要なカラムを抜きだす。</p></li>
+<li><p><strong>REDUCER</strong></p>
+
+<p>mapper からデータをコピーする。このとき、同じ結合キー (movie.id と score.movie_id) を持つデータは
+同じ reduce task にコピーされる。
+で、結合して、指定されたカラムを返す。</p></li>
+</ol>
+
+
+<h2>MAPJOIN してみる</h2>
+
+<p>HADOOP HACKS とかに、マップサイドジョンが紹介されていたので、試してみる。</p>
+
+<pre><code>&gt; EXPLAIN SELECT /*+ MAPJOIN(a) */ id, rating FROM movie a JOIN score b ON a.id = b.movie_id;
+
+ABSTRACT SYNTAX TREE:
+  (TOK_QUERY (TOK_FROM (TOK_JOIN (TOK_TABREF (TOK_TABNAME movie) a) (TOK_TABREF (TOK_TABNAME score) b) (= (. (TOK_TABLE_OR_CO
+L a) id) (. (TOK_TABLE_OR_COL b) movie_id)))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_HINTLIST (TOK_HINT TO
+K_MAPJOIN (TOK_HINTARGLIST a))) (TOK_SELEXPR (TOK_TABLE_OR_COL id)) (TOK_SELEXPR (TOK_TABLE_OR_COL rating)))))
+
+STAGE DEPENDENCIES:
+  Stage-3 is a root stage
+  Stage-1 depends on stages: Stage-3
+  Stage-0 is a root stage
+
+STAGE PLANS:
+  Stage: Stage-3
+    Map Reduce Local Work
+      Alias -&gt; Map Local Tables:
+        a 
+          Fetch Operator
+            limit: -1
+      Alias -&gt; Map Local Operator Tree:
+        a 
+          TableScan
+            alias: a
+            HashTable Sink Operator
+              condition expressions:
+                0 {id}
+                1 {rating}
+              handleSkewJoin: false
+              keys:
+                0 [Column[id]]
+                1 [Column[movie_id]]
+              Position of Big Table: 1
+
+  Stage: Stage-1
+    Map Reduce
+      Alias -&gt; Map Operator Tree:
+        b 
+          TableScan
+            alias: b
+            Map Join Operator
+              condition map:
+                   Inner Join 0 to 1
+              condition expressions:
+                0 {id}
+                1 {rating}
+              handleSkewJoin: false
+              keys:
+                0 [Column[id]]
+                1 [Column[movie_id]]
+              outputColumnNames: _col0, _col3
+              Position of Big Table: 1
+              Select Operator
+                expressions:
+                      expr: _col0
+                      type: int
+                      expr: _col3
+                      type: int
+                outputColumnNames: _col0, _col3
+                Select Operator
+                  expressions:
+                        expr: _col0
+                        type: int
+                        expr: _col3
+                        type: int
+                  outputColumnNames: _col0, _col1
+                  File Output Operator
+                    compressed: false
+                    GlobalTableId: 0
+                    table:
+                        input format: org.apache.hadoop.mapred.TextInputFormat
+                        output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+      Local Work:
+        Map Reduce Local Work
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+</code></pre>
+
+<p>たしかに reduce task がなくなっている。</p>
+
+<p><a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+JoinOptimization">https://cwiki.apache.org/confluence/display/Hive/LanguageManual+JoinOptimization</a> には、MAPJOIN の説明が以下のようにされている。</p>
+
+<blockquote><p>  MAPJOINs are processed by loading the smaller table into an in-memory hash map and matching keys with the larger table as they are streamed through. The prior implementation has this division of labor:</p>
+
+<ul>
+<li>  Local work:
+
+<ul>
+<li>  read records via standard table scan (including filters and projections) from source on local machine</li>
+<li>  build hashtable in memory</li>
+<li>  write hashtable to local disk</li>
+<li>  upload hashtable to dfs</li>
+<li>  add hashtable to distributed cache</li>
+</ul>
+</li>
+<li>  Map task
+
+<ul>
+<li>  read hashtable from local disk (distributed cache) into memory</li>
+<li>  match records&#8217; keys against hashtable</li>
+<li>  combine matches and write to output</li>
+</ul>
+</li>
+<li>  No reduce task</li>
+</ul>
+</blockquote>
+
+<p>Stage-3 で、<code>movie</code> テーブルを読み込んで hashtable を構築しているようだ。
+で、Stage-1 の map task で、この hashtable を使いながら <code>socre</code> テーブルを読み込んでいくのだろう。</p>
+
+<h2>Map Side Join についてもう少し考えてみる</h2>
+
+<p>Hadoop本の中で、「map側結合」が紹介されていた。(p.254 8.3.1 map側結合)
+ここで説明されている map 側結合と、Hive の MAPJOIN はどうも違うようだ。</p>
+
+<p>Hadoop本の map 側結合が Hive クエリ実行時に行なわれることはないのだろうか？
+Join 対象になる2つのテーブル (もしくは、サブクエリの結果) のデータが、
+結合キーごとに同じデータノードに入っている状況。</p>
+
+<p>うん。。</p>
+
+<p>思いつかない。</p>
+
+<h2>その他の JOIN の最適化方法</h2>
+
+<ul>
+<li><a href="https://cwiki.apache.org/confluence/download/attachments/27362054/Hive+Summit+2011-join.pdf?version=1&amp;modificationDate=1310001042000">https://cwiki.apache.org/confluence/download/attachments/27362054/Hive+Summit+2011-join.pdf?version=1&amp;modificationDate=1310001042000</a></li>
+<li><a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+JoinOptimization">https://cwiki.apache.org/confluence/display/Hive/LanguageManual+JoinOptimization</a></li>
+<li><a href="https://cwiki.apache.org/confluence/display/Hive/Skewed+Join+Optimization">https://cwiki.apache.org/confluence/display/Hive/Skewed+Join+Optimization</a></li>
+</ul>
+
+
+<p>とかもあるみたい。</p>
+
+<h3>Bucket Map Join</h3>
+
+<p>Join 対象のテーブルが bucketize されている場合、構築された hashtable を bucket key に基づいて、必要な map task にだけ配布するっぽい。</p>
+
+<h3>Sort Merge Map Join</h3>
+
+<h3>Skewed Join</h3>
+
+<p>よく分からない。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">ojima_h</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-30T11:23:00+09:00" pubdate data-updated="true">Aug 30<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ojima-h.github.com/blog/2013/08/30/hive-optimization/" data-via="ojima_h" data-counturl="http://ojima-h.github.com/blog/2013/08/30/hive-optimization/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/08/29/hadoop-tuning/" title="Previous Post: Hadoop チューニング">&laquo; Hadoop チューニング</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/08/30/hive-optimization/">Hive 最適化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/29/hadoop-tuning/">Hadoop チューニング</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/26/activerecord-number-1/">ActiveRecord #1</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/19/linux-from-scratch-number-0/">Linux from Scratch 始めます</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/16/arel-number-2/">arel #2</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/emacs'>emacs (2)</a></li><li><a href='/blog/categories/gentoo'>gentoo (2)</a></li><li><a href='/blog/categories/hadoop'>Hadoop (1)</a></li><li><a href='/blog/categories/hive'>Hive (1)</a></li><li><a href='/blog/categories/inov2013'>inov2013 (6)</a></li><li><a href='/blog/categories/linux-from-scratch'>linux-from-scratch (1)</a></li><li><a href='/blog/categories/misc'>misc (2)</a></li><li><a href='/blog/categories/octpress'>octpress (1)</a></li><li><a href='/blog/categories/rails'>rails (1)</a></li><li><a href='/blog/categories/rails-sourcecode-reading'>rails-sourcecode-reading (7)</a></li><li><a href='/blog/categories/ruby'>ruby (1)</a></li><li><a href='/blog/categories/xmonad'>xmonad (1)</a></li></ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/ojima-h">@ojima-h</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'ojima-h',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ojima_h", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ojima_h" class="twitter-follow-button" data-show-count="false">Follow @ojima_h</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - ojima_h -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

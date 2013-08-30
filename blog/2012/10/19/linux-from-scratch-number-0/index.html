@@ -1,0 +1,336 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Linux from Scratch 始めます - 毛無しさん@キレートレモン</title>
+  <meta name="author" content="ojima_h">
+
+  
+  <meta name="description" content="前々からやる、やる、と言っていた Linux from Scratch に手をつけようと思います。 Linux from scratch (LFS) ていうのは、 Linux From Scratch(リナックス フロム スクラッチ、LFS)とは、Linuxを1から構築しようという試みである。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ojima-h.github.com/blog/2012/10/19/linux-from-scratch-number-0/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="毛無しさん@キレートレモン" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35619154-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">毛無しさん@キレートレモン</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ojima-h.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Linux From Scratch 始めます</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-19T18:08:00+09:00" pubdate data-updated="true">Oct 19<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>前々からやる、やる、と言っていた Linux from Scratch に手をつけようと思います。</p>
+
+<p>Linux from scratch (LFS) ていうのは、</p>
+
+<blockquote><p>  Linux From Scratch(リナックス フロム スクラッチ、LFS)とは、Linuxを1から構築しようという試みである。すなわち、カーネルなども含めてすべて手作業でソースコードからコンパイルして作り上げる。</p>
+
+<p>  具体的には、まず現在動作しているLinuxシステム上で、LFSをコンパイルするためのシステムを構築する。そのシステム上で、実際に稼働するLFSのシステムをコンパイルし、実際に起動することが出来る状態にまでもって行くという手順を踏む。</p>
+
+<p>  ref. http://ja.wikipedia.org/wiki/Linux_from_Scratch</p></blockquote>
+
+<p>ということです。でもって、</p>
+
+<blockquote><p>  LFS teaches people how a Linux system works internally
+  Building LFS teaches you about all that makes Linux tick, how things work together and depend on each other. And most importantly, how to customize it to your own tastes and needs.</p>
+
+<p>  ref. http://www.linuxfromscratch.org/lfs/</p></blockquote>
+
+<p>楽しく勉強できる、ということのようです。</p>
+
+<p>本家 : <a href="http://www.linuxfromscratch.org">http://www.linuxfromscratch.org</a></p>
+
+<h2>準備</h2>
+
+<p><a href="http://www.linuxfromscratch.org/lfs/downloads/stable/">http://www.linuxfromscratch.org/lfs/downloads/stable/</a> から、LFS-BOOK-7.2.pdf もしくは、LFS-BOOK-7.2.tar.bz (HTMLが入ってる)をダウンロードします。このBOOKに従って粛々とビルドしていきます。</p>
+
+<p>次に、適当なマシンにLinuxをインストールします。LFSやるなら、32bitマシンが無難ぽいです。</p>
+
+<p>というわけで、Core 2 Quad のマシンにGentooをインストールしました。安心の最小構成です。
+手元のノートからSSHでアクセスすることにします。</p>
+
+<p>Gentooがインストールされたシステムを「ホスト」と呼びます。
+ホスト側で最小限のシステムをビルドした後、新しく構築した側のシステムに移りビスドを進めていくという
+流れです。</p>
+
+<h2>パーティション作成</h2>
+
+<p>LFSをビルドするために、新しいのパーティションを作ります。今回は10GBとしました。
+スワップ領域、ブートパーティションはホストと共有することにました。</p>
+
+<p>新しくつくったパーティションを<code>/mnt/lfs</code>以下にマウントし、そこにソースをダウンロードしてきます。</p>
+
+<p>ダウンロードするべきソースのリストは、<a href="http://www.linuxfromscratch.org/lfs/downloads/stable/LFS-BOOK-7.2.tar.bz2">http://www.linuxfromscratch.org/lfs/downloads/stable/LFS-BOOK-7.2.tar.bz2</a> に含まれる wget-list にあります。md5sum も含まれています。</p>
+
+<p>あとはユーザを作って、環境変数を調整したり&#8230; 詳しくはLFS-BOOK参照。</p>
+
+<p>これで、ソースが手に入ったので、あとはひたすらビルドしてくだけなんですかね&#8230;？そうだといいですね。</p>
+
+<p>とりあえず、今日はここまで。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">ojima_h</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-19T18:08:00+09:00" pubdate data-updated="true">Oct 19<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/inov2013/'>inov2013</a>, <a class='category' href='/blog/categories/linux-from-scratch/'>linux-from-scratch</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ojima-h.github.com/blog/2012/10/19/linux-from-scratch-number-0/" data-via="ojima_h" data-counturl="http://ojima-h.github.com/blog/2012/10/19/linux-from-scratch-number-0/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/10/16/arel-number-2/" title="Previous Post: arel #2">&laquo; arel #2</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/10/26/activerecord-number-1/" title="Next Post: ActiveRecord #1">ActiveRecord #1 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/08/30/hive-optimization/">Hive 最適化</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/08/29/hadoop-tuning/">Hadoop チューニング</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/26/activerecord-number-1/">ActiveRecord #1</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/19/linux-from-scratch-number-0/">Linux from Scratch 始めます</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/16/arel-number-2/">arel #2</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/emacs'>emacs (2)</a></li><li><a href='/blog/categories/gentoo'>gentoo (2)</a></li><li><a href='/blog/categories/hadoop'>Hadoop (1)</a></li><li><a href='/blog/categories/hive'>Hive (1)</a></li><li><a href='/blog/categories/inov2013'>inov2013 (6)</a></li><li><a href='/blog/categories/linux-from-scratch'>linux-from-scratch (1)</a></li><li><a href='/blog/categories/misc'>misc (2)</a></li><li><a href='/blog/categories/octpress'>octpress (1)</a></li><li><a href='/blog/categories/rails'>rails (1)</a></li><li><a href='/blog/categories/rails-sourcecode-reading'>rails-sourcecode-reading (7)</a></li><li><a href='/blog/categories/ruby'>ruby (1)</a></li><li><a href='/blog/categories/xmonad'>xmonad (1)</a></li></ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/ojima-h">@ojima-h</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'ojima-h',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("ojima_h", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/ojima_h" class="twitter-follow-button" data-show-count="false">Follow @ojima_h</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - ojima_h -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

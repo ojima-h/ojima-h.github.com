@@ -536,11 +536,75 @@ Join 対象になる2つのテーブル (もしくは、サブクエリの結果
 
 <p>Join 対象のテーブルが bucketize されている場合、構築された hashtable を bucket key に基づいて、必要な map task にだけ配布するっぽい。</p>
 
-<h3>Sort Merge Map Join</h3>
+<h3>Sort Merge Bucket Map Join</h3>
 
 <p>Join 対象のテーブルが bucketize されていて、しかも sort されている場合、もっと早くなるみたい。</p>
 
 <p>でも、sort するのが大変。</p>
+
+<p>試してみた。</p>
+
+<pre><code>&gt; set hive.input.format=org.apache.hadoop.hive.ql.io.BucketizedHiveInputFormat;
+&gt; set hive.optimize.bucketmapjoin = true;
+&gt; set hive.optimize.bucketmapjoin.sortedmerge = true;
+&gt; explain select  /*+ mapjoin(b) */ id, rating from movie a join score b on a.id = b.movie_id;
+
+ABSTRACT SYNTAX TREE:
+  (TOK_QUERY (TOK_FROM (TOK_JOIN (TOK_TABREF (TOK_TABNAME movie) a) (TOK_TABREF (TOK_TABNAME score) b) (= (. (TOK_TABLE_OR_COL a) id) (. (TOK_TABLE_OR_COL b) movie_id)))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_HINTLIST (TOK_HINT TOK_MAPJOIN (TOK_HINTARGLIST b))) (TOK_SELEXPR (TOK_TABLE_OR_COL id)) (TOK_SELEXPR (TOK_TABLE_OR_COL rating)))))
+
+STAGE DEPENDENCIES:
+  Stage-1 is a root stage
+  Stage-0 is a root stage
+
+STAGE PLANS:
+  Stage: Stage-1
+    Map Reduce
+      Alias -&gt; Map Operator Tree:
+        a 
+          TableScan
+            alias: a
+            Sorted Merge Bucket Map Join Operator
+              condition map:
+                   Inner Join 0 to 1
+              condition expressions:
+                0 {id}
+                1 {rating}
+              handleSkewJoin: false
+              keys:
+                0 [Column[id]]
+                1 [Column[movie_id]]
+              outputColumnNames: _col0, _col7
+              Position of Big Table: 0
+              Select Operator
+                expressions:
+                      expr: _col0
+                      type: int
+                      expr: _col7
+                      type: int
+                outputColumnNames: _col0, _col7
+                Select Operator
+                  expressions:
+                        expr: _col0
+                        type: int
+                        expr: _col7
+                        type: int
+                  outputColumnNames: _col0, _col1
+                  File Output Operator
+                    compressed: false
+                    GlobalTableId: 0
+                    table:
+                        input format: org.apache.hadoop.mapred.TextInputFormat
+                        output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+</code></pre>
+
+<p><strong>すごい！</strong>
+<strong>reduce task が無い上に、hashtable の構築すら消えた！！</strong></p>
+
+<p>これが Hadoop 本で言っていた map側結合なのかもしれない。</p>
 
 <h3>Skewed Join</h3>
 
@@ -554,6 +618,7 @@ Join 対象になる2つのテーブル (もしくは、サブクエリの結果
 サブクエリの中で十分絞り込んだ後 JOIN するのが実用的かも。</p></li>
 <li><p>Bucket Map Join は、既存のHiveテーブルに対して、後から bucketize するのは大変そう。
 集計用の中間テーブルを作ることがあったら、検討してみるといいかも。</p></li>
+<li><p>Semi Join を使うのも有効らしい</p></li>
 <li><p>HADOOP HACKS の中で、UDF (User Define Fucntion) や UDAF (User Define Aggregate Function) の作り方が載っていた。
 この辺をもっとサクサク使えるようになるとはかどりそうな気がした。
 むしろ、使わないともったいない。</p></li>

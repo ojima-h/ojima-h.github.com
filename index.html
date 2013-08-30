@@ -9,9 +9,9 @@
   <meta name="author" content="ojima_h">
 
   
-  <meta name="description" content="Hiveクエリを最適化する Hadoop本
+  <meta name="description" content="Hadoop本
 HADOOP HACKS を参考に、HiveQL が どんな Map/Reduce タスクに展開されるのかを想像しつつ(ソースは読んでないのであくまで想像)、
-効率の良い Hiveクエリの書き方を考えてみる。 まずは、普通のクエリ SELECT * &hellip;">
+効率の良い Hiveクエリの書き方を考えてみる。 まずは、普通のクエリ SELECT * FROM movie は、 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,7 +82,7 @@ HADOOP HACKS を参考に、HiveQL が どんな Map/Reduce タスクに展開�
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/08/30/hive-optimization/">Hive 最適化</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/08/30/hive-optimization/">Hive クエリを最適化する</a></h1>
     
     
       <p class="meta">
@@ -105,9 +105,7 @@ HADOOP HACKS を参考に、HiveQL が どんな Map/Reduce タスクに展開�
   </header>
 
 
-  <div class="entry-content"><h1>Hiveクエリを最適化する</h1>
-
-<ul>
+  <div class="entry-content"><ul>
 <li><a href="http://www.amazon.co.jp/Hadoop-Tom-White/dp/487311439X">Hadoop本</a></li>
 <li><a href="http://www.amazon.co.jp/Hadoop-Hacks-%E2%80%95%E3%83%97%E3%83%AD%E3%83%95%E3%82%A7%E3%83%83%E3%82%B7%E3%83%A7%E3%83%8A%E3%83%AB%E3%81%8C%E4%BD%BF%E3%81%86%E5%AE%9F%E8%B7%B5%E3%83%86%E3%82%AF%E3%83%8B%E3%83%83%E3%82%AF-%E4%B8%AD%E9%87%8E-%E7%8C%9B/dp/4873115469">HADOOP HACKS</a></li>
 </ul>
@@ -540,9 +538,27 @@ Join 対象になる2つのテーブル (もしくは、サブクエリの結果
 
 <h3>Sort Merge Map Join</h3>
 
+<p>Join 対象のテーブルが bucketize されていて、しかも sort されている場合、もっと早くなるみたい。</p>
+
+<p>でも、sort するのが大変。</p>
+
 <h3>Skewed Join</h3>
 
 <p>よく分からない。</p>
+
+<h2>その他、思ったこと</h2>
+
+<ul>
+<li><p>MAPJOIN はテーブル1つをまるごとメモリに載せないといけないので、
+せいぜい数十メガから数百メガのテーブルじゃないと辛そう。
+サブクエリの中で十分絞り込んだ後 JOIN するのが実用的かも。</p></li>
+<li><p>Bucket Map Join は、既存のHiveテーブルに対して、後から bucketize するのは大変そう。
+集計用の中間テーブルを作ることがあったら、検討してみるといいかも。</p></li>
+<li><p>HADOOP HACKS の中で、UDF (User Define Fucntion) や UDAF (User Define Aggregate Function) の作り方が載っていた。
+この辺をもっとサクサク使えるようになるとはかどりそうな気がした。
+むしろ、使わないともったいない。</p></li>
+</ul>
+
 </div>
   
   
@@ -555,7 +571,7 @@ Join 対象になる2つのテーブル (もしくは、サブクエリの結果
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/08/29/hadoop-tuning/">Hadoop チューニング</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/08/29/hadoop-tuning/">Hadoop のチューニングに関してまとめ</a></h1>
     
     
       <p class="meta">
@@ -578,9 +594,7 @@ Join 対象になる2つのテーブル (もしくは、サブクエリの結果
   </header>
 
 
-  <div class="entry-content"><h1>Hadoop のチューニングに関してまとめ</h1>
-
-<p>効率の良い HiveQL を書くときに気をつけるべきことをまとめてみる。</p>
+  <div class="entry-content"><p>1効率の良い HiveQL を書くときに気をつけるべきことをまとめてみる。</p>
 
 <p><em>以下に書いたことは、ほとんど全部自分なりの解釈なので、間違いが多々あると思います</em></p>
 
@@ -1435,11 +1449,11 @@ Rails のソースコードをじっくり読んでいこう、と思い立ち�
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/08/30/hive-optimization/">Hive 最適化</a>
+        <a href="/blog/2013/08/30/hive-optimization/">Hive クエリを最適化する</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/08/29/hadoop-tuning/">Hadoop チューニング</a>
+        <a href="/blog/2013/08/29/hadoop-tuning/">Hadoop のチューニングに関してまとめ</a>
       </li>
     
       <li class="post">

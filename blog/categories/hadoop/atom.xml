@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Hadoop | 毛無しさん@キレートレモン]]></title>
   <link href="http://ojima-h.github.com/blog/categories/hadoop/atom.xml" rel="self"/>
   <link href="http://ojima-h.github.com/"/>
-  <updated>2013-08-30T16:24:01+09:00</updated>
+  <updated>2013-08-30T16:51:21+09:00</updated>
   <id>http://ojima-h.github.com/</id>
   <author>
     <name><![CDATA[ojima_h]]></name>
@@ -14,13 +14,11 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Hadoop チューニング]]></title>
+    <title type="html"><![CDATA[Hadoop のチューニングに関してまとめ]]></title>
     <link href="http://ojima-h.github.com/blog/2013/08/29/hadoop-tuning/"/>
     <updated>2013-08-29T16:06:00+09:00</updated>
     <id>http://ojima-h.github.com/blog/2013/08/29/hadoop-tuning</id>
-    <content type="html"><![CDATA[<h1>Hadoop のチューニングに関してまとめ</h1>
-
-<p>効率の良い HiveQL を書くときに気をつけるべきことをまとめてみる。</p>
+    <content type="html"><![CDATA[<p>1効率の良い HiveQL を書くときに気をつけるべきことをまとめてみる。</p>
 
 <p><em>以下に書いたことは、ほとんど全部自分なりの解釈なので、間違いが多々あると思います</em></p>
 
